@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">xkcd</string>
+
+    <!-- login page -->
+    <string name="login_button">Login</string>
+    <string name="login_username">Username</string>
+    <string name="login_password">Password</string>
+    <string name="login_title">XKCD Comic Viewer</string>
+    <string name="login_author">Sarim Mehdi</string>
+    <string name="login_background_img_description">
+        This is the background image displayed on the login page</string>
 </resources>
