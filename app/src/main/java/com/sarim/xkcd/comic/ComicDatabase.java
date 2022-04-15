@@ -1,4 +1,4 @@
-package com.sarim.xkcd.room;
+package com.sarim.xkcd.comic;
 
 import android.content.Context;
 

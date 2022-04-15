@@ -1,6 +1,7 @@
-package com.sarim.xkcd.room;
+package com.sarim.xkcd.comic;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;

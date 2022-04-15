@@ -9,4 +9,18 @@
     <string name="login_author">Sarim Mehdi</string>
     <string name="login_background_img_description">
         This is the background image displayed on the login page</string>
+
+    <!-- comic viewing page -->
+    <string name="comic_title">TITLE</string>
+    <string name="comic_issue">ISSUE NUMBER</string>
+    <string name="comic_release">RELEASE YEAR</string>
+    <string name="comic_month">MONTH</string>
+    <string name="comic_day">DAY</string>
+    <string name="comic_transcript">TRANSCRIPT</string>
+    <string name="comic_explanation">EXPLANATION</string>
+    <string name="comic_img_description">This is the image for displaying the comic</string>
+    <string name="comic_transcript_description">This is the transcript for the comic</string>
+    <string name="comic_explanation_description">This is the explanation for the comic</string>
+    <string name="comic_favorite_btn_description">
+        Press this to mark the comic as favorite</string>
 </resources>
