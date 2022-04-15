@@ -1,5 +1,7 @@
-package com.sarim.xkcd.comic;
+package com.sarim.xkcd.ui;
 
+import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -9,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.sarim.xkcd.BR;
 import com.sarim.xkcd.R;
+import com.sarim.xkcd.comic.Comic;
 import com.sarim.xkcd.databinding.ComicSummaryBinding;
 
 import java.util.List;
@@ -17,6 +20,7 @@ public class ComicAdapter extends RecyclerView.Adapter<ComicAdapter.ViewHolder>
         implements ComicClickListener {
 
     private final List<Comic> comics;
+    private Context context;
 
     public ComicAdapter(List<Comic> comics) {
         this.comics = comics;
@@ -38,6 +42,7 @@ public class ComicAdapter extends RecyclerView.Adapter<ComicAdapter.ViewHolder>
     public void onBindViewHolder(ViewHolder holder, int position) {
         Comic comic = comics.get(position);
         holder.bind(comic);
+        context = holder.itemView.getContext();
         holder.comicSummaryBinding.setComicClickListener(this);
     }
 
@@ -48,7 +53,9 @@ public class ComicAdapter extends RecyclerView.Adapter<ComicAdapter.ViewHolder>
 
     @Override
     public void comicClicked(Comic comic) {
-
+        Intent intent = new Intent(context, ComicViewingActivity.class);
+        intent.putExtra("comic", comic);
+        context.startActivity(intent);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

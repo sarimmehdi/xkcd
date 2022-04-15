@@ -5,7 +5,6 @@ import android.os.Handler;
 import android.os.HandlerThread;
 
 import androidx.annotation.NonNull;
-import androidx.core.util.Consumer;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
@@ -25,12 +24,13 @@ public class ViewModel extends AndroidViewModel {
     private Handler viewModelHandler;
 
     // this will be used for retrieving comics from server
-    private RetrofitHelper retrofitHelper;
+    private final RetrofitHelper retrofitHelper;
 
     public ViewModel(@NonNull Application application) {
         super(application);
         comicRepository = new ComicRepository(application);
         allComics = comicRepository.getAllComics();
+        retrofitHelper = new RetrofitHelper();
     }
 
     /**
@@ -40,7 +40,6 @@ public class ViewModel extends AndroidViewModel {
         viewModelThread = new HandlerThread("viewModelThread");
         viewModelThread.start();
         viewModelHandler = new Handler(viewModelThread.getLooper());
-        retrofitHelper = new RetrofitHelper();
     }
 
     public void getComicFromServer(int id) {

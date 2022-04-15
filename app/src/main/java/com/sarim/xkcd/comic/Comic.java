@@ -1,18 +1,21 @@
 package com.sarim.xkcd.comic;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 import com.google.gson.annotations.SerializedName;
 
 @Entity(tableName = "comic_table")
-public class Comic {
+public class Comic implements Parcelable {
 
-    @PrimaryKey(autoGenerate = true)
-    private int id;
+    @PrimaryKey
+    private int num;
 
     private String month;
-    private int num;
     private String link;
     private String year;
     private String news;
@@ -41,12 +44,18 @@ public class Comic {
         this.day = day;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
+    public Comic(Parcel in){
+        month = in.readString();
+        num = in.readInt();
+        link = in.readString();
+        year = in.readString();
+        news = in.readString();
+        safeTitle = in.readString();
+        transcript = in.readString();
+        alt = in.readString();
+        img = in.readString();
+        title = in.readString();
+        day = in.readString();
     }
 
     public String getMonth() {
@@ -135,5 +144,52 @@ public class Comic {
 
     public void setDay(String day) {
         this.day = day;
+    }
+
+    public static final Parcelable.Creator<Comic> CREATOR = new Parcelable.Creator<Comic>() {
+        public Comic createFromParcel(Parcel in) {
+            return new Comic(in);
+        }
+
+        public Comic[] newArray(int size) {
+            return new Comic[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int i) {
+        dest.writeString(month);
+        dest.writeInt(num);
+        dest.writeString(link);
+        dest.writeString(year);
+        dest.writeString(news);
+        dest.writeString(safeTitle);
+        dest.writeString(transcript);
+        dest.writeString(alt);
+        dest.writeString(img);
+        dest.writeString(title);
+        dest.writeString(day);
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "Comic{month='" + month + '\'' +
+                ", num='" + num + '\'' +
+                ", link='" + link + '\'' +
+                ", year='" + year + '\'' +
+                ", news='" + news + '\'' +
+                ", safeTitle='" + safeTitle + '\'' +
+                ", transcript='" + transcript + '\'' +
+                ", alt='" + alt + '\'' +
+                ", img='" + img + '\'' +
+                ", title='" + title + '\'' +
+                ", day='" + day + '\'' +
+                '}';
     }
 }

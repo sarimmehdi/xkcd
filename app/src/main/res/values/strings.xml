@@ -23,4 +23,9 @@
     <string name="comic_explanation_description">This is the explanation for the comic</string>
     <string name="comic_favorite_btn_description">
         Press this to mark the comic as favorite</string>
+
+    <!-- button tabs -->
+    <string name="tab_favorites">FAVORITES</string>
+    <string name="tab_all_comic">ALL COMICS</string>
+    <string name="search_btn_description">This will allow you to search for comics</string>
 </resources>

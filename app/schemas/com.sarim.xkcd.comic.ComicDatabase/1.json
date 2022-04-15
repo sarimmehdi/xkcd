@@ -2,15 +2,15 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "c2787462db7969a34a766bb8411a0853",
+    "identityHash": "ec0395553a0588ec4cd06726d48398b6",
     "entities": [
       {
         "tableName": "comic_table",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `month` TEXT, `num` INTEGER NOT NULL, `link` TEXT, `year` TEXT, `news` TEXT, `safeTitle` TEXT, `transcript` TEXT, `alt` TEXT, `img` TEXT, `title` TEXT, `day` TEXT)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`num` INTEGER NOT NULL, `month` TEXT, `link` TEXT, `year` TEXT, `news` TEXT, `safeTitle` TEXT, `transcript` TEXT, `alt` TEXT, `img` TEXT, `title` TEXT, `day` TEXT, PRIMARY KEY(`num`))",
         "fields": [
           {
-            "fieldPath": "id",
-            "columnName": "id",
+            "fieldPath": "num",
+            "columnName": "num",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -19,12 +19,6 @@
             "columnName": "month",
             "affinity": "TEXT",
             "notNull": false
-          },
-          {
-            "fieldPath": "num",
-            "columnName": "num",
-            "affinity": "INTEGER",
-            "notNull": true
           },
           {
             "fieldPath": "link",
@@ -83,9 +77,9 @@
         ],
         "primaryKey": {
           "columnNames": [
-            "id"
+            "num"
           ],
-          "autoGenerate": true
+          "autoGenerate": false
         },
         "indices": [],
         "foreignKeys": []
@@ -94,7 +88,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c2787462db7969a34a766bb8411a0853')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ec0395553a0588ec4cd06726d48398b6')"
     ]
   }
 }

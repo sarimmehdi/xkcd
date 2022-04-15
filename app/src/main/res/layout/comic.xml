@@ -1,173 +1,173 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable
+            name="comic"
+            type="com.sarim.xkcd.comic.Comic" />
+    </data>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/comic_img"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@drawable/default_image"
-        android:contentDescription="@string/comic_img_description"/>
-
-    <TextView
-        android:id="@+id/comic_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/xkcd"
-        android:textStyle="bold"
-        android:textColor="@color/black"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/comic_img"
-        app:layout_constraintHorizontal_bias="0.045"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/comic_img"
-        app:layout_constraintVertical_bias="0.010" />
-
-    <TextView
-        android:id="@+id/comic_issue"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/xkcd"
-        android:textStyle="bold"
-        android:textColor="@color/black"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/comic_img"
-        app:layout_constraintHorizontal_bias="0.046"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/comic_title"
-        app:layout_constraintVertical_bias="0.05" />
-
-    <TextView
-        android:id="@+id/comic_release"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/xkcd"
-        android:textStyle="bold"
-        android:textColor="@color/black"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/comic_img"
-        app:layout_constraintHorizontal_bias="0.046"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/comic_issue"
-        app:layout_constraintVertical_bias="0.05" />
-
-    <TextView
-        android:id="@+id/comic_month"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/xkcd"
-        android:textStyle="bold"
-        android:textColor="@color/black"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/comic_img"
-        app:layout_constraintHorizontal_bias="0.046"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/comic_release"
-        app:layout_constraintVertical_bias="0.05" />
-
-    <TextView
-        android:id="@+id/comic_day"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/xkcd"
-        android:textStyle="bold"
-        android:textColor="@color/black"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/comic_img"
-        app:layout_constraintHorizontal_bias="0.046"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/comic_month"
-        app:layout_constraintVertical_bias="0.05" />
-
-    <TextView
-        android:id="@+id/comic_transcript"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/xkcd"
-        android:textStyle="bold"
-        android:textColor="@color/black"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/comic_img"
-        app:layout_constraintHorizontal_bias="0.046"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/comic_day"
-        app:layout_constraintVertical_bias="0.05" />
-
-    <ScrollView
-        android:id="@+id/transcript_scrollview"
-        android:layout_width="302dp"
-        android:layout_height="161dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_max="200dp"
-        app:layout_constraintHorizontal_bias="0.467"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/comic_transcript"
-        app:layout_constraintVertical_bias="0.05"
-        android:contentDescription="@string/comic_transcript_description">
-
-        <LinearLayout
-            android:id="@+id/scrollable_transcript"
-            android:layout_width="match_parent"
+        <ImageView
+            android:id="@+id/comic_img"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical" />
-    </ScrollView>
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0"
+            app:srcCompat="@drawable/default_image"
+            android:contentDescription="@string/comic_img_description"/>
 
-    <TextView
-        android:id="@+id/comic_explanation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/xkcd"
-        android:textColor="@color/black"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/comic_img"
-        app:layout_constraintHorizontal_bias="0.024"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/transcript_scrollview"
-        app:layout_constraintVertical_bias="0.05" />
-
-    <ScrollView
-        android:id="@+id/explanation_scrollview"
-        android:layout_width="302dp"
-        android:layout_height="161dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_max="100dp"
-        app:layout_constraintHorizontal_bias="0.495"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/comic_explanation"
-        app:layout_constraintVertical_bias="0.05"
-        android:contentDescription="@string/comic_explanation_description">
-
-        <LinearLayout
-            android:id="@+id/scrollable_explanation"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/comic_title"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical" />
-    </ScrollView>
+            android:fontFamily="@font/xkcd"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:text="@{@string/comic_title + `: ` + comic.title}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/comic_img"
+            app:layout_constraintHorizontal_bias="0.045"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/comic_img"
+            app:layout_constraintVertical_bias="0.010" />
 
-    <ImageButton
-        android:id="@+id/comic_fav_btn"
-        android:layout_width="57dp"
-        android:layout_height="48dp"
-        android:layout_marginEnd="16dp"
-        android:background="#FFFFFF"
-        app:layout_constraintBottom_toTopOf="@+id/transcript_scrollview"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/comic_title"
-        app:layout_constraintTop_toBottomOf="@+id/comic_img"
-        app:layout_constraintVertical_bias="0.075"
-        app:srcCompat="@android:drawable/star_big_off"
-        android:contentDescription="@string/comic_favorite_btn_description"/>
+        <TextView
+            android:id="@+id/comic_issue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/xkcd"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:text="@{@string/comic_issue + `: ` + Integer.toString(comic.num)}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/comic_img"
+            app:layout_constraintHorizontal_bias="0.046"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/comic_title"
+            app:layout_constraintVertical_bias="0.05" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/comic_release"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/xkcd"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:text="@{@string/comic_release + `: ` + comic.year}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/comic_img"
+            app:layout_constraintHorizontal_bias="0.046"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/comic_issue"
+            app:layout_constraintVertical_bias="0.05" />
+
+        <TextView
+            android:id="@+id/comic_month"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/xkcd"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:text="@{@string/comic_month + `: ` + comic.month}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/comic_img"
+            app:layout_constraintHorizontal_bias="0.046"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/comic_release"
+            app:layout_constraintVertical_bias="0.05" />
+
+        <TextView
+            android:id="@+id/comic_day"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/xkcd"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:text="@{@string/comic_day + `: ` + comic.day}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/comic_img"
+            app:layout_constraintHorizontal_bias="0.046"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/comic_month"
+            app:layout_constraintVertical_bias="0.05" />
+
+        <TextView
+            android:id="@+id/comic_transcript"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/xkcd"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:text="@string/comic_transcript"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/comic_img"
+            app:layout_constraintHorizontal_bias="0.046"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/comic_day"
+            app:layout_constraintVertical_bias="0.05" />
+
+        <ScrollView
+            android:id="@+id/transcript_scrollview"
+            android:layout_width="302dp"
+            android:layout_height="161dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_max="200dp"
+            app:layout_constraintHorizontal_bias="0.467"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/comic_transcript"
+            app:layout_constraintVertical_bias="0.05"
+            android:contentDescription="@string/comic_transcript_description">
+
+            <LinearLayout
+                android:id="@+id/scrollable_transcript"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{comic.transcript}"/>
+            </LinearLayout>
+        </ScrollView>
+
+        <ImageButton
+            android:id="@+id/comic_fav_btn"
+            android:layout_width="57dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="16dp"
+            android:background="#FFFFFF"
+            app:layout_constraintBottom_toTopOf="@+id/transcript_scrollview"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@+id/comic_title"
+            app:layout_constraintTop_toBottomOf="@+id/comic_img"
+            app:layout_constraintVertical_bias="0.075"
+            app:srcCompat="@android:drawable/star_big_off"
+            android:contentDescription="@string/comic_favorite_btn_description"/>
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/comic_explanation"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/transcript_scrollview"
+            app:layout_constraintVertical_bias="0.479"
+            android:fontFamily="@font/xkcd"
+            android:textColor="@color/black"
+            android:backgroundTint="@color/white"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
