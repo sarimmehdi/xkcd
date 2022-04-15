@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
         viewModel.createBackgroundThreads();
 
         // get first 5 comics
-        for (int id = 1; id <= 2; id++) {
+        for (int id = 1; id <= 5; id++) {
             viewModel.getComicFromServer(id);
         }
     }

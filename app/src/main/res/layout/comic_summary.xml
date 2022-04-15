@@ -6,10 +6,12 @@
         <variable
             name="comic"
             type="com.sarim.xkcd.comic.Comic" />
-
         <variable
             name="comicClickListener"
             type="com.sarim.xkcd.ui.ComicClickListener" />
+        <variable
+            name="imgDatabinding"
+            type="com.sarim.xkcd.ui.ImgDatabinding" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -28,7 +30,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.0"
-            app:srcCompat="@drawable/default_image" />
+            app:srcCompat="@drawable/default_image"
+            app:imageUrl="@{comic.img}"/>
 
         <TextView
             android:id="@+id/comic_summary_title"
