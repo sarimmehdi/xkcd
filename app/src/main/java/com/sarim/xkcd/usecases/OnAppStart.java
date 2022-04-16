@@ -26,7 +26,8 @@ public class OnAppStart {
     }
 
     public void execute() {
-        viewModel.getComicsFromServer();
+        viewModel.setFavoriteTab(false);
+        viewModel.getComicsFromServer(0);
         comicListBinding.favoritesTab.setBackgroundColor(
                 ContextCompat.getColor(context, R.color.white)
         );

@@ -16,7 +16,7 @@ public class OnAppExit {
     }
 
     public void execute() {
-        viewModel.deleteAllComicsOnDevice();
+        viewModel.deleteOnlyNonFavoriteComicsOnDevice();
         viewModel.quitThreads();
     }
 }

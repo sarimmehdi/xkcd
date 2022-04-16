@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
 
+import com.sarim.xkcd.comic.Comic;
 import com.sarim.xkcd.databinding.ComicListBinding;
 import com.sarim.xkcd.di.DaggerMainActivityComponents;
 import com.sarim.xkcd.di.MainActivityComponents;
@@ -16,8 +17,11 @@ import com.sarim.xkcd.usecases.OnAppExit;
 import com.sarim.xkcd.usecases.OnAppStart;
 import com.sarim.xkcd.usecases.OnEditTextChanged;
 import com.sarim.xkcd.usecases.OnFavBtnClicked;
+import com.sarim.xkcd.usecases.OnFavStarBtnClicked;
 import com.sarim.xkcd.usecases.OnNextPageBtnClicked;
 import com.sarim.xkcd.usecases.OnPrevBtnClicked;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -41,6 +45,8 @@ public class MainActivity extends AppCompatActivity {
     OnNextPageBtnClicked onNextPageBtnClicked;
     @Inject
     OnPrevBtnClicked onPrevBtnClicked;
+    @Inject
+    OnFavStarBtnClicked onFavStarBtnClicked;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +57,10 @@ public class MainActivity extends AppCompatActivity {
         viewModel.getAllComicsOnDevice().observe(
                 this,
                 comics -> {
-                    comicListBinding.setComicAdapter(new ComicAdapter(comics));
+                    List<Comic> comicsOnCurrPage = viewModel.getComicsForCurrPageOnly(comics);
+                    comicListBinding.setComicAdapter(
+                            new ComicAdapter(comicsOnCurrPage, onFavStarBtnClicked.execute())
+                    );
                     comicListBinding.executePendingBindings();
                 }
         );
@@ -60,6 +69,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+
+        // initialize view model and databinding for comic list before adding them to dependency graph
         viewModel.createBackgroundThreads();
         comicListBinding.setViewModel(viewModel);
         MainActivityComponents mainActivityComponents = DaggerMainActivityComponents.builder()

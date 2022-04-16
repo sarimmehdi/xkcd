@@ -13,7 +13,7 @@ import java.util.List;
 @Dao
 public interface ComicDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insert(Comic comic);
 
     @Update
@@ -24,6 +24,9 @@ public interface ComicDao {
 
     @Query("DELETE FROM comic_table")
     void deleteAll();
+
+    @Query("DELETE FROM comic_table WHERE favorite = 0")
+    void deleteNonFavorites();
 
     @Query("SELECT * FROM comic_table")
     LiveData<List<Comic>> getAllComics();

@@ -1,9 +1,11 @@
 package com.sarim.xkcd.comic;
 
+import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
@@ -28,9 +30,11 @@ public class Comic implements Parcelable {
     private String img;
     private String title;
     private String day;
+    private boolean favorite;
 
     public Comic(String month, int num, String link, String year, String news, String safeTitle,
-                 String transcript, String alt, String img, String title, String day) {
+                 String transcript, String alt, String img, String title, String day,
+                 boolean favorite) {
         this.month = month;
         this.num = num;
         this.link = link;
@@ -42,8 +46,10 @@ public class Comic implements Parcelable {
         this.img = img;
         this.title = title;
         this.day = day;
+        this.favorite = favorite;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.Q)
     public Comic(Parcel in){
         month = in.readString();
         num = in.readInt();
@@ -56,6 +62,7 @@ public class Comic implements Parcelable {
         img = in.readString();
         title = in.readString();
         day = in.readString();
+        favorite = in.readBoolean();
     }
 
     public String getMonth() {
@@ -146,7 +153,16 @@ public class Comic implements Parcelable {
         this.day = day;
     }
 
+    public boolean isFavorite() {
+        return favorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        this.favorite = favorite;
+    }
+
     public static final Parcelable.Creator<Comic> CREATOR = new Parcelable.Creator<Comic>() {
+        @RequiresApi(api = Build.VERSION_CODES.Q)
         public Comic createFromParcel(Parcel in) {
             return new Comic(in);
         }
@@ -161,6 +177,7 @@ public class Comic implements Parcelable {
         return 0;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.Q)
     @Override
     public void writeToParcel(Parcel dest, int i) {
         dest.writeString(month);
@@ -174,6 +191,7 @@ public class Comic implements Parcelable {
         dest.writeString(img);
         dest.writeString(title);
         dest.writeString(day);
+        dest.writeBoolean(favorite);
     }
 
     @NonNull
@@ -190,6 +208,7 @@ public class Comic implements Parcelable {
                 ", img='" + img + '\'' +
                 ", title='" + title + '\'' +
                 ", day='" + day + '\'' +
+                ", favorite='" + favorite + '\'' +
                 '}';
     }
 }

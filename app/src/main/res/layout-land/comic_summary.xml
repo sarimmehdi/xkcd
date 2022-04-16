@@ -8,8 +8,8 @@
             name="comicClickListener"
             type="com.sarim.xkcd.ui.interfaces.ComicClickListener" />
         <variable
-            name="imgDatabinding"
-            type="com.sarim.xkcd.ui.ImgDatabinding" />
+            name="favComicClickListener"
+            type="com.sarim.xkcd.ui.interfaces.OnFavComicClickListener" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -125,7 +125,9 @@
             app:layout_constraintStart_toEndOf="@+id/comic_img"
             app:layout_constraintTop_toBottomOf="@+id/comic_summary_day"
             app:layout_constraintVertical_bias="0.13"
-            app:srcCompat="@android:drawable/star_big_off" />
+            app:favorite="@{comic.favorite}"
+            app:srcCompat="@android:drawable/star_big_off"
+            android:onClick="@{() -> favComicClickListener.favStarButtonClicked(comic)}" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -14,17 +14,21 @@ import com.sarim.xkcd.R;
 import com.sarim.xkcd.comic.Comic;
 import com.sarim.xkcd.databinding.ComicSummaryBinding;
 import com.sarim.xkcd.ui.interfaces.ComicClickListener;
+import com.sarim.xkcd.ui.interfaces.OnFavComicClickListener;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 public class ComicAdapter extends RecyclerView.Adapter<ComicAdapter.ViewHolder>
-        implements ComicClickListener {
+        implements ComicClickListener, OnFavComicClickListener {
 
     private final List<Comic> comics;
     private Context context;
+    private final Consumer<Comic> comicConsumerWhenFavBtnClicked;
 
-    public ComicAdapter(List<Comic> comics) {
+    public ComicAdapter(List<Comic> comics, Consumer<Comic> comicConsumerWhenFavBtnClicked) {
         this.comics = comics;
+        this.comicConsumerWhenFavBtnClicked = comicConsumerWhenFavBtnClicked;
     }
 
     @NonNull
@@ -45,6 +49,7 @@ public class ComicAdapter extends RecyclerView.Adapter<ComicAdapter.ViewHolder>
         holder.bind(comic);
         context = holder.itemView.getContext();
         holder.comicSummaryBinding.setComicClickListener(this);
+        holder.comicSummaryBinding.setFavComicClickListener(this);
     }
 
     @Override
@@ -57,6 +62,11 @@ public class ComicAdapter extends RecyclerView.Adapter<ComicAdapter.ViewHolder>
         Intent intent = new Intent(context, ComicViewingActivity.class);
         intent.putExtra("comic", comic);
         context.startActivity(intent);
+    }
+
+    @Override
+    public void favStarButtonClicked(Comic comic) {
+        comicConsumerWhenFavBtnClicked.accept(comic);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

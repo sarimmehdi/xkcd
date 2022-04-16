@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "ec0395553a0588ec4cd06726d48398b6",
+    "identityHash": "606553893d47d647073b7a435ba15acd",
     "entities": [
       {
         "tableName": "comic_table",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`num` INTEGER NOT NULL, `month` TEXT, `link` TEXT, `year` TEXT, `news` TEXT, `safeTitle` TEXT, `transcript` TEXT, `alt` TEXT, `img` TEXT, `title` TEXT, `day` TEXT, PRIMARY KEY(`num`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`num` INTEGER NOT NULL, `month` TEXT, `link` TEXT, `year` TEXT, `news` TEXT, `safeTitle` TEXT, `transcript` TEXT, `alt` TEXT, `img` TEXT, `title` TEXT, `day` TEXT, `favorite` INTEGER NOT NULL, PRIMARY KEY(`num`))",
         "fields": [
           {
             "fieldPath": "num",
@@ -73,6 +73,12 @@
             "columnName": "day",
             "affinity": "TEXT",
             "notNull": false
+          },
+          {
+            "fieldPath": "favorite",
+            "columnName": "favorite",
+            "affinity": "INTEGER",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -88,7 +94,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ec0395553a0588ec4cd06726d48398b6')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '606553893d47d647073b7a435ba15acd')"
     ]
   }
 }

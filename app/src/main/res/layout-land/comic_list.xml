@@ -142,7 +142,7 @@
             android:hint="@string/page_number_edittext_hint"
             android:importantForAutofill="no"
             android:inputType="number"
-            android:text="@{String.valueOf((Integer) viewModel.currPage)}"
+            android:text="@{String.valueOf((Integer) viewModel.editTextCurrPage)}"
             android:textColor="@color/black"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/searchBtn"

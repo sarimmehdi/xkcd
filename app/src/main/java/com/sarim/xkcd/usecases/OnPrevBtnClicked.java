@@ -21,9 +21,14 @@ public class OnPrevBtnClicked {
     @Inject
     public void execute() {
         comicListBinding.setPrevPageClickListener(() -> {
-            viewModel.deleteAllComicsOnDevice();
-            viewModel.decCurrPage();
-            viewModel.getComicsFromServer();
+            if (viewModel.isNotFavoriteTab()) {
+                viewModel.deleteOnlyNonFavoriteComicsOnDevice();
+                viewModel.getComicsFromServer(viewModel.getCurrPageAllComics() - 1);
+            }
+            else {
+                viewModel.setCurrPageFavComics(viewModel.getCurrPageFavComics() - 1);
+                viewModel.deleteOnlyNonFavoriteComicsOnDevice();
+            }
         });
     }
 }

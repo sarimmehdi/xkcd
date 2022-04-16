@@ -3,8 +3,10 @@ package com.sarim.xkcd;
 import android.app.Application;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.databinding.ObservableBoolean;
 import androidx.databinding.ObservableInt;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
@@ -14,6 +16,8 @@ import com.sarim.xkcd.comic.ComicRepository;
 import com.sarim.xkcd.retrofit.RetrofitHelper;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
 public class ViewModel extends AndroidViewModel {
     @NonNull
@@ -27,14 +31,32 @@ public class ViewModel extends AndroidViewModel {
     // this will be used for retrieving comics from server
     private final RetrofitHelper retrofitHelper = new RetrofitHelper();
 
-    // check which page the user is on
-    public ObservableInt currPage = new ObservableInt(0);
+    // check which page the user is on when viewing all comics
+    private final ObservableInt currPageAllComics = new ObservableInt(0);
 
-    // check whether you are viewing favorite comics or all comics
-    private boolean favoritesTab = false;
+    // check which page the user is on when viewing only favorite comics
+    private final ObservableInt currPageFavComics = new ObservableInt(0);
+
+    // the way comics are sorted on each page depends on whether you are in the favorites tab or not
+    private final ObservableBoolean favoriteTab = new ObservableBoolean(false);
+
+    // this is what the user will see on the edit text dialog
+    public ObservableInt editTextCurrPage = new ObservableInt(
+            currPageAllComics, currPageFavComics, favoriteTab
+    ) {
+        @Override
+        public int get() {
+            if (favoriteTab.get()) {
+                return currPageFavComics.get();
+            }
+            else {
+                return currPageAllComics.get();
+            }
+        }
+    };
 
     // show only a certain number of comics per page
-    private static int MAX_COMICS_PER_PAGE = 5;
+    private static final int MAX_COMICS_PER_PAGE = 5;
 
     public ViewModel(@NonNull Application application) {
         super(application);
@@ -51,27 +73,110 @@ public class ViewModel extends AndroidViewModel {
         viewModelHandler = new Handler(viewModelThread.getLooper());
     }
 
-    public void incCurrPage() {
-        currPage.set(currPage.get() + 1);
+    public int getCurrPageAllComics() {
+        return currPageAllComics.get();
     }
 
-    public void decCurrPage() {
-        currPage.set(Math.max(0, currPage.get() - 1));
+    public void setCurrPageAllComics(int currPageAllComics) {
+        this.currPageAllComics.set(Math.max(0, currPageAllComics));
     }
 
-    public void setCurrPage(int currPage) {
-        this.currPage.set(currPage);
+    public int getCurrPageFavComics() {
+        return currPageFavComics.get();
     }
 
-    public void setFavoritesTab(boolean favoritesTab) {
-        this.favoritesTab = favoritesTab;
+    public void setCurrPageFavComics(int currPageFavComics) {
+        this.currPageFavComics.set(Math.max(0, currPageFavComics));
     }
 
-    public void getComicsFromServer() {
-        int firstComicOnCurrPage = currPage.get() * MAX_COMICS_PER_PAGE + 1;
+    public void setFavoriteTab(boolean favoriteTab) {
+        this.favoriteTab.set(favoriteTab);
+    }
+
+    public boolean isNotFavoriteTab() {
+        return !favoriteTab.get();
+    }
+
+    /**
+     * First obtain the new range of numbers from the provided page number for which you want to try
+     * to grab comics from the server. If you get at least one comic in the new range, then apply
+     * the page number, since each page must have at least 1 comic to view
+     * @param pageNumber pass a value that will be used to find comics in a range
+     */
+    public void getComicsFromServer(int pageNumber) {
+        int firstComicOnCurrPage = pageNumber * MAX_COMICS_PER_PAGE + 1;
         int lastComicOnCurrPage = firstComicOnCurrPage + MAX_COMICS_PER_PAGE - 1;
+        AtomicBoolean foundAtleastOneComicInNewRange = new AtomicBoolean(false);
         for (int id = firstComicOnCurrPage; id <= lastComicOnCurrPage; id++) {
-            retrofitHelper.getComic(id, this::insertComicOnDevice);
+            retrofitHelper.getComic(id, comic -> {
+                if (comic != null) {
+                    insertComicOnDevice(comic);
+                    if (!foundAtleastOneComicInNewRange.get()) {
+                        setCurrPageAllComics(pageNumber);
+                        foundAtleastOneComicInNewRange.set(true);
+                    }
+                }
+            });
+        }
+    }
+
+    /**
+     * For comics received from the server, always show them in ascending order of their number
+     * value regardless of whether they are favorites or not. When the favorites tab is selected,
+     * only show the favorite comics in ascending order of their number value
+     * @param comics list of comics that will be sorted before being displayed
+     * @return list of sorted comics according to the tab selected by the user
+     */
+    public List<Comic> getComicsForCurrPageOnly(List<Comic> comics) {
+        if (favoriteTab.get()) {
+            comics.sort((comic1, comic2) -> {
+                if (comic1.getNum() < comic2.getNum()) {
+                    return -1;
+                }
+                else if (comic1.getNum() > comic2.getNum()) {
+                    return 1;
+                }
+                return 0;
+            });
+
+            // think of a sliding window being passed over list of ints
+            int maxLargeIndexOfFinalWindow = comics.size() - 1;
+            int minLargeIndexOfFinalWindow = Math.max(0, maxLargeIndexOfFinalWindow - MAX_COMICS_PER_PAGE);
+            int allowableMinIndexOfCurrentWindow, allowableMaxIndexOfCurrentWindow;
+            int proposedMinIndexOfCurrentWindow = currPageFavComics.get() * MAX_COMICS_PER_PAGE;
+            int proposedMaxIndexOfCurrentWindow = proposedMinIndexOfCurrentWindow + MAX_COMICS_PER_PAGE;
+
+            if (proposedMinIndexOfCurrentWindow < 0) {
+                allowableMinIndexOfCurrentWindow = 0;
+            }
+            else if (proposedMinIndexOfCurrentWindow >= comics.size()) {
+                allowableMinIndexOfCurrentWindow = minLargeIndexOfFinalWindow;
+            }
+            else {
+                allowableMinIndexOfCurrentWindow = proposedMinIndexOfCurrentWindow;
+            }
+
+            if (proposedMaxIndexOfCurrentWindow < 0) {
+                allowableMaxIndexOfCurrentWindow = 0;
+            }
+            else if (proposedMaxIndexOfCurrentWindow >= comics.size()) {
+                allowableMaxIndexOfCurrentWindow = maxLargeIndexOfFinalWindow;
+            }
+            else {
+                allowableMaxIndexOfCurrentWindow = proposedMaxIndexOfCurrentWindow;
+            }
+            return comics.subList(
+                    allowableMinIndexOfCurrentWindow,
+                    allowableMaxIndexOfCurrentWindow + 1
+            );
+        }
+        else {
+            int firstComicOnCurrPage = currPageAllComics.get() * MAX_COMICS_PER_PAGE + 1;
+            int lastComicOnCurrPage = firstComicOnCurrPage + MAX_COMICS_PER_PAGE - 1;
+            return comics.stream()
+                    .filter(comic -> comic.getNum() >= firstComicOnCurrPage
+                            && comic.getNum() <= lastComicOnCurrPage)
+                    .collect(Collectors.toList());
         }
     }
 
@@ -79,7 +184,7 @@ public class ViewModel extends AndroidViewModel {
         viewModelHandler.post(() -> comicRepository.insert(comic));
     }
 
-    private void updateComicOnDevice(Comic comic) {
+    public void updateComicOnDevice(Comic comic) {
         viewModelHandler.post(() -> comicRepository.update(comic));
     }
 
@@ -89,6 +194,10 @@ public class ViewModel extends AndroidViewModel {
 
     public void deleteAllComicsOnDevice() {
         viewModelHandler.post(comicRepository::deleteAll);
+    }
+
+    public void deleteOnlyNonFavoriteComicsOnDevice() {
+        viewModelHandler.post(comicRepository::deleteNonFavorites);
     }
 
     public LiveData<List<Comic>> getAllComicsOnDevice() {

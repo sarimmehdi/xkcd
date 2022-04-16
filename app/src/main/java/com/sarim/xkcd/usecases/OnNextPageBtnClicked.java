@@ -21,9 +21,14 @@ public class OnNextPageBtnClicked {
     @Inject
     public void execute() {
         comicListBinding.setNextPageClickListener(() -> {
-            viewModel.deleteAllComicsOnDevice();
-            viewModel.incCurrPage();
-            viewModel.getComicsFromServer();
+            if (viewModel.isNotFavoriteTab()) {
+                viewModel.deleteOnlyNonFavoriteComicsOnDevice();
+                viewModel.getComicsFromServer(viewModel.getCurrPageAllComics() + 1);
+            }
+            else {
+                viewModel.setCurrPageFavComics(viewModel.getCurrPageFavComics() + 1);
+                viewModel.deleteOnlyNonFavoriteComicsOnDevice();
+            }
         });
     }
 }

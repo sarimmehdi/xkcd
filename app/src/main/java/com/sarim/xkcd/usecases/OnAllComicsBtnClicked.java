@@ -29,9 +29,9 @@ public class OnAllComicsBtnClicked {
     @Inject
     public void execute() {
         comicListBinding.setAllComicsClickListener(() -> {
-            viewModel.deleteAllComicsOnDevice();
-            viewModel.setFavoritesTab(false);
-            viewModel.getComicsFromServer();
+            viewModel.deleteOnlyNonFavoriteComicsOnDevice();
+            viewModel.setFavoriteTab(false);
+            viewModel.getComicsFromServer(viewModel.getCurrPageAllComics());
             comicListBinding.favoritesTab.setBackgroundColor(
                     ContextCompat.getColor(context, R.color.white)
             );

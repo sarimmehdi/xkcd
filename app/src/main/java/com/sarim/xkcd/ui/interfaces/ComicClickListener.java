@@ -1,7 +1,5 @@
 package com.sarim.xkcd.ui.interfaces;
 
-import android.content.Context;
-
 import com.sarim.xkcd.comic.Comic;
 
 public interface ComicClickListener {

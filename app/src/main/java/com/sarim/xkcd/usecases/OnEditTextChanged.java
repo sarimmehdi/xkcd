@@ -38,9 +38,14 @@ public class OnEditTextChanged {
             public void afterTextChanged(Editable editable) {
                 try {
                     int pageNum = Integer.parseInt(editable.toString());
-                    viewModel.deleteAllComicsOnDevice();
-                    viewModel.setCurrPage(pageNum);
-                    viewModel.getComicsFromServer();
+                    if (viewModel.isNotFavoriteTab()) {
+                        viewModel.deleteOnlyNonFavoriteComicsOnDevice();
+                        viewModel.getComicsFromServer(pageNum);
+                    }
+                    else {
+                        viewModel.setCurrPageFavComics(pageNum);
+                        viewModel.deleteOnlyNonFavoriteComicsOnDevice();
+                    }
                 } catch (NumberFormatException e) {
                     e.printStackTrace();
                 }

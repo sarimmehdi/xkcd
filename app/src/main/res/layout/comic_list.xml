@@ -130,7 +130,7 @@
             android:layout_height="58dp"
             android:ems="10"
             android:inputType="number"
-            android:text="@{String.valueOf((Integer) viewModel.currPage)}"
+            android:text="@{String.valueOf((Integer) viewModel.editTextCurrPage)}"
             android:gravity="center"
             android:fontFamily="@font/xkcd"
             android:textColor="@color/black"

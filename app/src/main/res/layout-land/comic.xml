@@ -4,7 +4,6 @@
         <variable
             name="comic"
             type="com.sarim.xkcd.comic.Comic" />
-
         <variable
             name="imgDatabinding"
             type="com.sarim.xkcd.ui.ImgDatabinding" />
@@ -155,20 +154,6 @@
             app:layout_constraintStart_toEndOf="@+id/comic_img"
             app:layout_constraintTop_toBottomOf="@+id/transcript_scrollview"
             app:layout_constraintVertical_bias="0.131" />
-
-        <ImageButton
-            android:id="@+id/comic_fav_btn"
-            android:layout_width="57dp"
-            android:layout_height="48dp"
-            android:background="#FFFFFF"
-            android:contentDescription="@string/comic_favorite_btn_description"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.044"
-            app:layout_constraintStart_toEndOf="@+id/comic_img"
-            app:layout_constraintTop_toBottomOf="@+id/button2"
-            app:layout_constraintVertical_bias="1.0"
-            app:srcCompat="@android:drawable/star_big_off" />
 
         <Button
             android:id="@+id/button2"

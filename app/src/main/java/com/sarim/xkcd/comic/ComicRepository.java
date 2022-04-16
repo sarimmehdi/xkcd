@@ -34,6 +34,10 @@ public class ComicRepository {
         comicDao.deleteAll();
     }
 
+    public void deleteNonFavorites() {
+        comicDao.deleteNonFavorites();
+    }
+
     public LiveData<List<Comic>> getAllComics() {
         return allComics;
     }
