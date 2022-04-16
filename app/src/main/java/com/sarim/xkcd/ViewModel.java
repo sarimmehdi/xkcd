@@ -17,6 +17,7 @@ import com.sarim.xkcd.retrofit.RetrofitHelper;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class ViewModel extends AndroidViewModel {
@@ -198,6 +199,16 @@ public class ViewModel extends AndroidViewModel {
 
     public void deleteOnlyNonFavoriteComicsOnDevice() {
         viewModelHandler.post(comicRepository::deleteNonFavorites);
+    }
+
+    public void forceRefresh() {
+        List<Comic> comics = allComics.getValue();
+        if (comics != null) {
+            for (Comic comic : comics) {
+                comic.setFavorite(comic.isFavorite());
+                updateComicOnDevice(comic);
+            }
+        }
     }
 
     public LiveData<List<Comic>> getAllComicsOnDevice() {

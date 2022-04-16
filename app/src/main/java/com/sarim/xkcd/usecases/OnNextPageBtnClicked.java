@@ -28,6 +28,7 @@ public class OnNextPageBtnClicked {
             else {
                 viewModel.setCurrPageFavComics(viewModel.getCurrPageFavComics() + 1);
                 viewModel.deleteOnlyNonFavoriteComicsOnDevice();
+                viewModel.forceRefresh();
             }
         });
     }

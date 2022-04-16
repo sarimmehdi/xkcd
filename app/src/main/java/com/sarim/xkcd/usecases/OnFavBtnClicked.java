@@ -29,6 +29,7 @@ public class OnFavBtnClicked {
     public void execute() {
         comicListBinding.setFavoritesClickListener(() -> {
             viewModel.deleteOnlyNonFavoriteComicsOnDevice();
+            viewModel.forceRefresh();
             viewModel.setFavoriteTab(true);
             comicListBinding.favoritesTab.setBackgroundColor(
                     ContextCompat.getColor(context, R.color.silver)

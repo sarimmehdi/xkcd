@@ -5,6 +5,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import com.sarim.xkcd.comic.Comic;
 import com.sarim.xkcd.databinding.ComicListBinding;
@@ -58,6 +59,8 @@ public class MainActivity extends AppCompatActivity {
                 this,
                 comics -> {
                     List<Comic> comicsOnCurrPage = viewModel.getComicsForCurrPageOnly(comics);
+                    Log.d("sarim", "number of comics loaded " + comics.size());
+                    Log.d("sarim", "comicsOnCurrPage " + comicsOnCurrPage.size());
                     comicListBinding.setComicAdapter(
                             new ComicAdapter(comicsOnCurrPage, onFavStarBtnClicked.execute())
                     );

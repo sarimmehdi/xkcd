@@ -45,6 +45,7 @@ public class OnEditTextChanged {
                     else {
                         viewModel.setCurrPageFavComics(pageNum);
                         viewModel.deleteOnlyNonFavoriteComicsOnDevice();
+                        viewModel.forceRefresh();
                     }
                 } catch (NumberFormatException e) {
                     e.printStackTrace();
