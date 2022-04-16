@@ -18,8 +18,10 @@
     <string name="comic_day">DAY</string>
     <string name="comic_transcript">TRANSCRIPT</string>
     <string name="comic_explanation">EXPLANATION</string>
-    <string name="come_search_online">SEARCH</string>
-    <string name="come_search_online_description">Search online for a comic</string>
+    <string name="comic_search_online">SEARCH</string>
+    <string name="send_comic_to_someone">Send comic to someone</string>
+    <string name="send_comic_placeholder_string">goodbuddy@email.com</string>
+    <string name="comic_search_online_description">Search online for a comic</string>
     <string name="comic_img_description">This is the image for displaying the comic</string>
     <string name="comic_transcript_description">This is the transcript for the comic</string>
     <string name="comic_explanation_description">This is the explanation for the comic</string>
@@ -35,4 +37,8 @@
         This will take you to the previous page of comics</string>
     <string name="page_number_edittext_hint">
         Type a number here to jump several pages forward or backwards</string>
+
+    <!-- email sent to another person -->
+    <string name="email_subject">Check out this cool comic!</string>
+    <string name="email_send_title">Send this email to %1$s</string>
 </resources>
