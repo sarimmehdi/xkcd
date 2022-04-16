@@ -1,27 +1,46 @@
 package com.sarim.xkcd;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 
 import com.sarim.xkcd.databinding.ComicListBinding;
-import com.sarim.xkcd.ui.AllComicsClickListener;
+import com.sarim.xkcd.di.DaggerMainActivityComponents;
+import com.sarim.xkcd.di.MainActivityComponents;
+import com.sarim.xkcd.di.ProvidersModule;
 import com.sarim.xkcd.ui.ComicAdapter;
-import com.sarim.xkcd.ui.FavoritesClickListener;
-import com.sarim.xkcd.ui.NextPageClickListener;
-import com.sarim.xkcd.ui.PrevPageClickListener;
+import com.sarim.xkcd.usecases.OnAllComicsBtnClicked;
+import com.sarim.xkcd.usecases.OnAppExit;
+import com.sarim.xkcd.usecases.OnAppStart;
+import com.sarim.xkcd.usecases.OnEditTextChanged;
+import com.sarim.xkcd.usecases.OnFavBtnClicked;
+import com.sarim.xkcd.usecases.OnNextPageBtnClicked;
+import com.sarim.xkcd.usecases.OnPrevBtnClicked;
 
-public class MainActivity extends AppCompatActivity
-        implements AllComicsClickListener, FavoritesClickListener,
-        NextPageClickListener, PrevPageClickListener {
+import javax.inject.Inject;
+
+public class MainActivity extends AppCompatActivity {
 
     private ComicListBinding comicListBinding;
     private ViewModel viewModel;
+
+    // all the different functions our app performs
+    @Inject
+    OnAllComicsBtnClicked onAllComicsBtnClicked;
+    @Inject
+    OnAppExit onAppExit;
+    @Inject
+    OnAppStart onAppStart;
+    @Inject
+    OnEditTextChanged onEditTextChanged;
+    @Inject
+    OnFavBtnClicked onFavBtnClicked;
+    @Inject
+    OnNextPageBtnClicked onNextPageBtnClicked;
+    @Inject
+    OnPrevBtnClicked onPrevBtnClicked;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,89 +61,21 @@ public class MainActivity extends AppCompatActivity
     protected void onStart() {
         super.onStart();
         viewModel.createBackgroundThreads();
-        viewModel.getComicsFromServer();
         comicListBinding.setViewModel(viewModel);
-        comicListBinding.setAllComicsClickListener(this);
-        comicListBinding.setFavoritesClickListener(this);
-        comicListBinding.setNextPageClickListener(this);
-        comicListBinding.setPrevPageClickListener(this);
-        comicListBinding.favoritesTab.setBackgroundColor(
-                ContextCompat.getColor(this, R.color.white)
-        );
-        comicListBinding.allComicsTab.setBackgroundColor(
-                ContextCompat.getColor(this, R.color.silver)
-        );
+        MainActivityComponents mainActivityComponents = DaggerMainActivityComponents.builder()
+                .providersModule(new ProvidersModule(viewModel, comicListBinding, this))
+                .build();
+        mainActivityComponents.inject(this);
 
-        // listen for edit text changes
-        comicListBinding.editTextPageNumber.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                try {
-                    int pageNum = Integer.parseInt(editable.toString());
-                    viewModel.deleteAllComicsOnDevice();
-                    viewModel.setCurrPage(pageNum);
-                    viewModel.getComicsFromServer();
-                } catch (NumberFormatException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+        // this use case is executed when the app is started
+        onAppStart.execute();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        viewModel.deleteAllComicsOnDevice();
-        viewModel.quitThreads();
-    }
 
-    @Override
-    public void allComicsButtonClicked() {
-        viewModel.deleteAllComicsOnDevice();
-        viewModel.setFavoritesTab(false);
-        viewModel.getComicsFromServer();
-        comicListBinding.favoritesTab.setBackgroundColor(
-                ContextCompat.getColor(this, R.color.white)
-        );
-        comicListBinding.allComicsTab.setBackgroundColor(
-                ContextCompat.getColor(this, R.color.silver)
-        );
-    }
-
-    @Override
-    public void favButtonClicked() {
-        viewModel.deleteAllComicsOnDevice();
-        viewModel.setFavoritesTab(true);
-        viewModel.getComicsFromServer();
-        comicListBinding.favoritesTab.setBackgroundColor(
-                ContextCompat.getColor(this, R.color.silver)
-        );
-        comicListBinding.allComicsTab.setBackgroundColor(
-                ContextCompat.getColor(this, R.color.white)
-        );
-    }
-
-    @Override
-    public void nextPageBtnClicked() {
-        viewModel.deleteAllComicsOnDevice();
-        viewModel.incCurrPage();
-        viewModel.getComicsFromServer();
-    }
-
-    @Override
-    public void prevPageBtnClicked() {
-        viewModel.deleteAllComicsOnDevice();
-        viewModel.decCurrPage();
-        viewModel.getComicsFromServer();
+        // this use case is executed when you close the app
+        onAppExit.execute();
     }
 }

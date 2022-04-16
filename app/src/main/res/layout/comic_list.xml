@@ -8,16 +8,16 @@
             type="com.sarim.xkcd.ui.ComicAdapter" />
         <variable
             name="allComicsClickListener"
-            type="com.sarim.xkcd.ui.AllComicsClickListener" />
+            type="com.sarim.xkcd.ui.interfaces.AllComicsClickListener" />
         <variable
             name="favoritesClickListener"
-            type="com.sarim.xkcd.ui.FavoritesClickListener" />
+            type="com.sarim.xkcd.ui.interfaces.FavoritesClickListener" />
         <variable
             name="nextPageClickListener"
-            type="com.sarim.xkcd.ui.NextPageClickListener" />
+            type="com.sarim.xkcd.ui.interfaces.NextPageClickListener" />
         <variable
             name="prevPageClickListener"
-            type="com.sarim.xkcd.ui.PrevPageClickListener" />
+            type="com.sarim.xkcd.ui.interfaces.PrevPageClickListener" />
         <variable
             name="viewModel"
             type="com.sarim.xkcd.ViewModel" />

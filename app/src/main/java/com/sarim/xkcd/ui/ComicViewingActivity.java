@@ -9,6 +9,7 @@ import androidx.databinding.DataBindingUtil;
 import com.sarim.xkcd.R;
 import com.sarim.xkcd.comic.Comic;
 import com.sarim.xkcd.databinding.ComicBinding;
+import com.sarim.xkcd.ui.interfaces.ExplanationClickListener;
 
 public class ComicViewingActivity extends AppCompatActivity implements ExplanationClickListener {
 

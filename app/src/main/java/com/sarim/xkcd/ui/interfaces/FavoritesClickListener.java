@@ -1,4 +1,4 @@
-package com.sarim.xkcd.ui;
+package com.sarim.xkcd.ui.interfaces;
 
 public interface FavoritesClickListener {
     void favButtonClicked();

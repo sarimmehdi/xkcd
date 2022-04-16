@@ -13,6 +13,7 @@ import com.sarim.xkcd.BR;
 import com.sarim.xkcd.R;
 import com.sarim.xkcd.comic.Comic;
 import com.sarim.xkcd.databinding.ComicSummaryBinding;
+import com.sarim.xkcd.ui.interfaces.ComicClickListener;
 
 import java.util.List;
 

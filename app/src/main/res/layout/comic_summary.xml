@@ -8,7 +8,7 @@
             type="com.sarim.xkcd.comic.Comic" />
         <variable
             name="comicClickListener"
-            type="com.sarim.xkcd.ui.ComicClickListener" />
+            type="com.sarim.xkcd.ui.interfaces.ComicClickListener" />
         <variable
             name="imgDatabinding"
             type="com.sarim.xkcd.ui.ImgDatabinding" />
