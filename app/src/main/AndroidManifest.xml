@@ -25,8 +25,12 @@
             android:parentActivityName=".MainActivity"
             android:theme="@style/Theme.Xkcd"/>
         <activity
-            android:name=".ui.WebViewActivity"
+            android:name=".ui.ExplanationWebViewActivity"
             android:parentActivityName=".ui.ComicViewingActivity"
+            android:theme="@style/Theme.Xkcd"/>
+        <activity
+            android:name=".ui.SearchWebViewActivity"
+            android:parentActivityName=".MainActivity"
             android:theme="@style/Theme.Xkcd"/>
     </application>
 

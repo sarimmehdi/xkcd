@@ -116,6 +116,15 @@ public class ViewModel extends AndroidViewModel {
     }
 
     /**
+     * retrieve specific comic using just the number value and display it in a separate activity
+     * @param num the number for which you wish to retrieve the comic
+     * @param comicConsumer what you do with the comic after retrieving it
+     */
+    public void getComicFromServer(int num, Consumer<Comic> comicConsumer) {
+        retrofitHelper.getComic(num, comicConsumer::accept);
+    }
+
+    /**
      * First obtain the new range of numbers from the provided page number for which you want to try
      * to grab comics from the server. If you get at least one comic in the new range, then apply
      * the page number, since each page must have at least 1 comic to view

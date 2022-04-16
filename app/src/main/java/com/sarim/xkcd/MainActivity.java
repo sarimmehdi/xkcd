@@ -5,7 +5,6 @@ import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
-import android.util.Log;
 
 import com.sarim.xkcd.comic.Comic;
 import com.sarim.xkcd.databinding.ComicListBinding;
@@ -20,10 +19,10 @@ import com.sarim.xkcd.usecases.OnEditTextChanged;
 import com.sarim.xkcd.usecases.OnFavBtnClicked;
 import com.sarim.xkcd.usecases.OnFavStarBtnClicked;
 import com.sarim.xkcd.usecases.OnNextPageBtnClicked;
+import com.sarim.xkcd.usecases.OnOnlineSearchRequest;
 import com.sarim.xkcd.usecases.OnPrevBtnClicked;
 
 import java.util.List;
-import java.util.function.Predicate;
 
 import javax.inject.Inject;
 
@@ -49,6 +48,8 @@ public class MainActivity extends AppCompatActivity {
     OnPrevBtnClicked onPrevBtnClicked;
     @Inject
     OnFavStarBtnClicked onFavStarBtnClicked;
+    @Inject
+    OnOnlineSearchRequest onOnlineSearchRequest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

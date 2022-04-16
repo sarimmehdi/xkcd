@@ -1,7 +1,6 @@
 package com.sarim.xkcd.usecases;
 
-import android.text.Editable;
-import android.text.TextWatcher;
+import android.view.KeyEvent;
 
 import com.sarim.xkcd.ViewModel;
 import com.sarim.xkcd.databinding.ComicListBinding;
@@ -23,21 +22,11 @@ public class OnEditTextChanged {
 
     @Inject
     public void execute() {
-        comicListBinding.editTextPageNumber.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
+        comicListBinding.editTextPageNumber.setOnKeyListener((view, i, keyEvent) -> {
+            if ((keyEvent.getAction() == KeyEvent.ACTION_DOWN) && (i == KeyEvent.KEYCODE_ENTER)) {
                 try {
-                    int pageNum = Integer.parseInt(editable.toString());
+                    String inputByUser = comicListBinding.editTextPageNumber.getText().toString();
+                    int pageNum = Integer.parseInt(inputByUser);
                     if (viewModel.isNotFavoriteTab()) {
                         viewModel.deleteOnlyNonFavoriteComicsOnDevice();
                         viewModel.getComicsFromServer(pageNum);
@@ -50,7 +39,9 @@ public class OnEditTextChanged {
                 } catch (NumberFormatException e) {
                     e.printStackTrace();
                 }
+                return true;
             }
+            return false;
         });
     }
 }

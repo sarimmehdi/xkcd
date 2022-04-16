@@ -40,7 +40,7 @@ public class ComicViewingActivity extends AppCompatActivity implements Explanati
 
     @Override
     public void explanationClicked(Comic comic) {
-        Intent intent = new Intent(context, WebViewActivity.class);
+        Intent intent = new Intent(context, ExplanationWebViewActivity.class);
         intent.putExtra("comic", comic);
         context.startActivity(intent);
     }
