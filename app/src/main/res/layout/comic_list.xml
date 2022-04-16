@@ -1,11 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:tools="http://schemas.android.com/tools"
+<layout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <data>
         <variable
             name="comicAdapter"
             type="com.sarim.xkcd.ui.ComicAdapter" />
+        <variable
+            name="allComicsClickListener"
+            type="com.sarim.xkcd.ui.AllComicsClickListener" />
+        <variable
+            name="favoritesClickListener"
+            type="com.sarim.xkcd.ui.FavoritesClickListener" />
+        <variable
+            name="nextPageClickListener"
+            type="com.sarim.xkcd.ui.NextPageClickListener" />
+        <variable
+            name="prevPageClickListener"
+            type="com.sarim.xkcd.ui.PrevPageClickListener" />
+        <variable
+            name="viewModel"
+            type="com.sarim.xkcd.ViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -37,7 +52,8 @@
             app:layout_constraintBottom_toTopOf="@+id/comicListRecycler"
             app:layout_constraintEnd_toStartOf="@+id/allComicsTab"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:onClick="@{() -> favoritesClickListener.favButtonClicked()}" />
 
         <Button
             android:id="@+id/allComicsTab"
@@ -53,7 +69,8 @@
             app:layout_constraintHorizontal_bias="0.995"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintVertical_bias="0.0"
+            android:onClick="@{() -> allComicsClickListener.allComicsButtonClicked()}"/>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/searchBtn"
@@ -71,6 +88,61 @@
             app:layout_constraintTop_toTopOf="@+id/comicListRecycler"
             app:layout_constraintVertical_bias="0.0"
             app:srcCompat="@android:drawable/ic_menu_search" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/nextPageBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            app:layout_constraintBottom_toBottomOf="@+id/comicListRecycler"
+            app:layout_constraintEnd_toStartOf="@+id/searchBtn"
+            app:layout_constraintHorizontal_bias="0.943"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/comicListRecycler"
+            app:layout_constraintVertical_bias="0.985"
+            app:srcCompat="@android:drawable/ic_media_play"
+            android:focusable="true"
+            android:backgroundTint="@color/white"
+            android:contentDescription="@string/next_page_btn_description"
+            android:onClick="@{() -> nextPageClickListener.nextPageBtnClicked()}"/>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/prevPageBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:rotation="180"
+            app:layout_constraintBottom_toBottomOf="@+id/comicListRecycler"
+            app:layout_constraintEnd_toStartOf="@+id/searchBtn"
+            app:layout_constraintHorizontal_bias="0.366"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/comicListRecycler"
+            app:layout_constraintVertical_bias="0.984"
+            app:srcCompat="@android:drawable/ic_media_play"
+            android:focusable="true"
+            android:backgroundTint="@color/white"
+            android:contentDescription="@string/prev_page_btn_description"
+            android:onClick="@{() -> prevPageClickListener.prevPageBtnClicked()}"/>
+
+        <EditText
+            android:id="@+id/editTextPageNumber"
+            android:layout_width="94dp"
+            android:layout_height="58dp"
+            android:ems="10"
+            android:inputType="number"
+            android:text="@{String.valueOf((Integer) viewModel.currPage)}"
+            android:gravity="center"
+            android:fontFamily="@font/xkcd"
+            android:textColor="@color/black"
+            app:layout_constraintBottom_toBottomOf="@+id/comicListRecycler"
+            app:layout_constraintEnd_toStartOf="@+id/nextPageBtn"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@+id/prevPageBtn"
+            app:layout_constraintTop_toTopOf="@+id/comicListRecycler"
+            app:layout_constraintVertical_bias="0.987"
+            android:importantForAutofill="no"
+            android:background="@color/silver"
+            android:hint="@string/page_number_edittext_hint"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

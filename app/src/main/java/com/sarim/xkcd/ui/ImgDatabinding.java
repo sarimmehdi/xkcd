@@ -10,6 +10,11 @@ public class ImgDatabinding {
 
     @BindingAdapter({"imageUrl"})
     public static void setImageUrl(ImageView view, String imageUrl) {
-        Picasso.get().load(imageUrl).into(view);
+        if (imageUrl.isEmpty()) {
+            Picasso.get().load("https://imgs.xkcd.com/comics/form.png").into(view);
+        }
+        else {
+            Picasso.get().load(imageUrl).into(view);
+        }
     }
 }

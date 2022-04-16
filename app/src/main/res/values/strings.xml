@@ -28,4 +28,9 @@
     <string name="tab_favorites">FAVORITES</string>
     <string name="tab_all_comic">ALL COMICS</string>
     <string name="search_btn_description">This will allow you to search for comics</string>
+    <string name="next_page_btn_description">This will take you to the next page of comics</string>
+    <string name="prev_page_btn_description">
+        This will take you to the previous page of comics</string>
+    <string name="page_number_edittext_hint">
+        Type a number here to jump several pages forward or backwards</string>
 </resources>

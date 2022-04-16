@@ -1,11 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:tools="http://schemas.android.com/tools"
+<layout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <data>
         <variable
             name="comicAdapter"
             type="com.sarim.xkcd.ui.ComicAdapter" />
+        <variable
+            name="allComicsClickListener"
+            type="com.sarim.xkcd.ui.AllComicsClickListener" />
+        <variable
+            name="favoritesClickListener"
+            type="com.sarim.xkcd.ui.FavoritesClickListener" />
+        <variable
+            name="nextPageClickListener"
+            type="com.sarim.xkcd.ui.NextPageClickListener" />
+        <variable
+            name="prevPageClickListener"
+            type="com.sarim.xkcd.ui.PrevPageClickListener" />
+        <variable
+            name="viewModel"
+            type="com.sarim.xkcd.ViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -31,6 +46,7 @@
             android:layout_height="37dp"
             android:backgroundTint="@color/white"
             android:fontFamily="@font/xkcd"
+            android:onClick="@{() -> favoritesClickListener.favButtonClicked()}"
             android:text="@string/tab_favorites"
             android:textColor="@color/black"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -49,6 +65,7 @@
             android:layout_marginBottom="8dp"
             android:backgroundTint="@color/white"
             android:fontFamily="@font/xkcd"
+            android:onClick="@{() -> allComicsClickListener.allComicsButtonClicked()}"
             android:text="@string/tab_all_comic"
             android:textColor="@color/black"
             app:layout_constraintBottom_toTopOf="@+id/favoritesTab"
@@ -74,6 +91,63 @@
             app:layout_constraintTop_toBottomOf="@+id/favoritesTab"
             app:layout_constraintVertical_bias="0.885"
             app:srcCompat="@android:drawable/ic_menu_search" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/nextPageBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/white"
+            android:clickable="true"
+            android:contentDescription="@string/next_page_btn_description"
+            android:focusable="true"
+            android:onClick="@{() -> nextPageClickListener.nextPageBtnClicked()}"
+            app:layout_constraintBottom_toTopOf="@+id/editTextPageNumber"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.596"
+            app:layout_constraintStart_toEndOf="@+id/comicListRecycler"
+            app:layout_constraintTop_toBottomOf="@+id/favoritesTab"
+            app:layout_constraintVertical_bias="0.888"
+            app:srcCompat="@android:drawable/ic_media_play" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/prevPageBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="9dp"
+            android:layout_marginTop="32dp"
+            android:backgroundTint="@color/white"
+            android:clickable="true"
+            android:contentDescription="@string/prev_page_btn_description"
+            android:focusable="true"
+            android:onClick="@{() -> prevPageClickListener.prevPageBtnClicked()}"
+            android:rotation="180"
+            app:layout_constraintBottom_toTopOf="@+id/editTextPageNumber"
+            app:layout_constraintEnd_toStartOf="@+id/nextPageBtn"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/comicListRecycler"
+            app:layout_constraintTop_toBottomOf="@+id/favoritesTab"
+            app:layout_constraintVertical_bias="0.0"
+            app:srcCompat="@android:drawable/ic_media_play" />
+
+        <EditText
+            android:id="@+id/editTextPageNumber"
+            android:layout_width="94dp"
+            android:layout_height="58dp"
+            android:layout_marginStart="9dp"
+            android:layout_marginBottom="28dp"
+            android:background="@color/silver"
+            android:ems="10"
+            android:fontFamily="@font/xkcd"
+            android:gravity="center"
+            android:hint="@string/page_number_edittext_hint"
+            android:importantForAutofill="no"
+            android:inputType="number"
+            android:text="@{String.valueOf((Integer) viewModel.currPage)}"
+            android:textColor="@color/black"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/searchBtn"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@+id/comicListRecycler" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
