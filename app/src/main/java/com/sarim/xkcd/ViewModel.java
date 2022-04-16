@@ -18,6 +18,7 @@ import com.sarim.xkcd.retrofit.RetrofitHelper;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class ViewModel extends AndroidViewModel {
@@ -59,6 +60,10 @@ public class ViewModel extends AndroidViewModel {
     // show only a certain number of comics per page
     private static final int MAX_COMICS_PER_PAGE = 5;
 
+    // restrict the number of comics the user can mark as favorite
+    private static final int MAX_FAV_COMICS = 20;
+    private int currFavComicsOnDevice = 0;
+
     public ViewModel(@NonNull Application application) {
         super(application);
         comicRepository = new ComicRepository(application);
@@ -72,6 +77,18 @@ public class ViewModel extends AndroidViewModel {
         viewModelThread = new HandlerThread("viewModelThread");
         viewModelThread.start();
         viewModelHandler = new Handler(viewModelThread.getLooper());
+    }
+
+    public int getCurrFavComicsOnDevice() {
+        return currFavComicsOnDevice;
+    }
+
+    public void setCurrFavComicsOnDevice(int currFavComicsOnDevice) {
+        this.currFavComicsOnDevice = currFavComicsOnDevice;
+    }
+
+    public boolean canMarkComicAsFavorite() {
+        return currFavComicsOnDevice <= MAX_FAV_COMICS;
     }
 
     public int getCurrPageAllComics() {
@@ -129,7 +146,10 @@ public class ViewModel extends AndroidViewModel {
      * @return list of sorted comics according to the tab selected by the user
      */
     public List<Comic> getComicsForCurrPageOnly(List<Comic> comics) {
-        if (favoriteTab.get()) {
+        // if you only have favorites on device, that probably means you are offline
+        boolean onlyFavComicsOnDevice = comics.stream().allMatch(Comic::isFavorite);
+
+        if (favoriteTab.get() || onlyFavComicsOnDevice) {
             comics.sort((comic1, comic2) -> {
                 if (comic1.getNum() < comic2.getNum()) {
                     return -1;

@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.sarim.xkcd">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -21,6 +23,10 @@
         <activity
             android:name=".ui.ComicViewingActivity"
             android:parentActivityName=".MainActivity"
+            android:theme="@style/Theme.Xkcd"/>
+        <activity
+            android:name=".ui.WebViewActivity"
+            android:parentActivityName=".ui.ComicViewingActivity"
             android:theme="@style/Theme.Xkcd"/>
     </application>
 

@@ -8,7 +8,10 @@
             type="com.sarim.xkcd.comic.Comic" />
         <variable
             name="imgDatabinding"
-            type="com.sarim.xkcd.ui.ImgDatabinding" />
+            type="com.sarim.xkcd.ui.databinding.ImgDatabinding" />
+        <variable
+            name="onExplanationClicked"
+            type="com.sarim.xkcd.ui.interfaces.ExplanationClickListener" />
     </data>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -144,7 +147,7 @@
         </ScrollView>
 
         <Button
-            android:id="@+id/button"
+            android:id="@+id/explanationBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/comic_explanation"
@@ -156,7 +159,8 @@
             app:layout_constraintVertical_bias="0.479"
             android:fontFamily="@font/xkcd"
             android:textColor="@color/black"
-            android:backgroundTint="@color/white"/>
+            android:backgroundTint="@color/white"
+            android:onClick="@{() -> onExplanationClicked.explanationClicked(comic)}"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

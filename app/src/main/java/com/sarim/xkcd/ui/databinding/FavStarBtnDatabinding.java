@@ -1,4 +1,4 @@
-package com.sarim.xkcd.ui;
+package com.sarim.xkcd.ui.databinding;
 
 import android.widget.ImageButton;
 

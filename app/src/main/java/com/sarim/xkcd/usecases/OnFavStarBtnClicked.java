@@ -21,8 +21,10 @@ public class OnFavStarBtnClicked {
 
     public Consumer<Comic> execute() {
         return comic -> {
-            comic.setFavorite(!comic.isFavorite());
-            viewModel.updateComicOnDevice(comic);
+            if (viewModel.canMarkComicAsFavorite()) {
+                comic.setFavorite(!comic.isFavorite());
+                viewModel.updateComicOnDevice(comic);
+            }
         };
     }
 }

@@ -23,6 +23,7 @@ import com.sarim.xkcd.usecases.OnNextPageBtnClicked;
 import com.sarim.xkcd.usecases.OnPrevBtnClicked;
 
 import java.util.List;
+import java.util.function.Predicate;
 
 import javax.inject.Inject;
 
@@ -58,9 +59,9 @@ public class MainActivity extends AppCompatActivity {
         viewModel.getAllComicsOnDevice().observe(
                 this,
                 comics -> {
+                    long totalFavComicsOnDevice = comics.stream().filter(Comic::isFavorite).count();
+                    viewModel.setCurrFavComicsOnDevice((int) totalFavComicsOnDevice);
                     List<Comic> comicsOnCurrPage = viewModel.getComicsForCurrPageOnly(comics);
-                    Log.d("sarim", "number of comics loaded " + comics.size());
-                    Log.d("sarim", "comicsOnCurrPage " + comicsOnCurrPage.size());
                     comicListBinding.setComicAdapter(
                             new ComicAdapter(comicsOnCurrPage, onFavStarBtnClicked.execute())
                     );
