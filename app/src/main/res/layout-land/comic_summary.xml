@@ -30,7 +30,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.0"
             app:srcCompat="@drawable/default_image"
-            app:imageUrl="@{comic.img}"/>
+            app:imageUrl="@{comic}"/>
 
         <TextView
             android:id="@+id/comic_summary_title"

@@ -3,6 +3,8 @@ package com.sarim.xkcd.usecases;
 
 import com.sarim.xkcd.ViewModel;
 import com.sarim.xkcd.comic.Comic;
+import com.squareup.picasso.NetworkPolicy;
+import com.squareup.picasso.Picasso;
 
 import java.util.function.Consumer;
 
@@ -22,6 +24,7 @@ public class OnFavStarBtnClicked {
     public Consumer<Comic> execute() {
         return comic -> {
             if (viewModel.canMarkComicAsFavorite()) {
+                Picasso.get().load(comic.getImg());
                 comic.setFavorite(!comic.isFavorite());
                 viewModel.updateComicOnDevice(comic);
             }
