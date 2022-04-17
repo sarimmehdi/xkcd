@@ -1,4 +1,4 @@
-package com.sarim.xkcd.usecases;
+package com.sarim.xkcd.usecases.comicviewingactivity;
 
 import com.sarim.xkcd.ViewModel;
 
@@ -6,12 +6,12 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 @Singleton
-public class OnAppExit {
+public class OnComicViewingActivityEnd {
 
     private final ViewModel viewModel;
 
     @Inject
-    public OnAppExit(ViewModel viewModel) {
+    public OnComicViewingActivityEnd(ViewModel viewModel) {
         this.viewModel = viewModel;
     }
 

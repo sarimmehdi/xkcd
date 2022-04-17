@@ -64,6 +64,13 @@ public class ViewModel extends AndroidViewModel {
         allComics = comicRepository.getAllComics();
     }
 
+    public ViewModel(ComicRepository comicRepository,
+                     @NonNull Application application) {
+        super(application);
+        this.comicRepository = comicRepository;
+        allComics = comicRepository.getAllComics();
+    }
+
     /**
      * create background thread for doing sqlite transactions
      */

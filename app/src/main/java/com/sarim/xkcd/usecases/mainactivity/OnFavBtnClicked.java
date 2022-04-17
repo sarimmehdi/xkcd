@@ -1,4 +1,4 @@
-package com.sarim.xkcd.usecases;
+package com.sarim.xkcd.usecases.mainactivity;
 
 import android.content.Context;
 
@@ -12,15 +12,14 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 @Singleton
-public class OnAllComicsBtnClicked {
+public class OnFavBtnClicked {
 
     private final ViewModel viewModel;
     private final ComicListBinding comicListBinding;
     private final Context context;
 
     @Inject
-    public OnAllComicsBtnClicked(ViewModel viewModel, ComicListBinding comicListBinding,
-                                 Context context) {
+    public OnFavBtnClicked(ViewModel viewModel, ComicListBinding comicListBinding, Context context) {
         this.viewModel = viewModel;
         this.comicListBinding = comicListBinding;
         this.context = context;
@@ -28,15 +27,15 @@ public class OnAllComicsBtnClicked {
 
     @Inject
     public void execute() {
-        comicListBinding.setAllComicsClickListener(() -> {
+        comicListBinding.setFavoritesClickListener(() -> {
             viewModel.deleteOnlyNonFavoriteComicsOnDevice();
-            viewModel.setFavoriteTab(false);
-            viewModel.getComicsFromServer(viewModel.getCurrPageAllComics());
+            viewModel.forceRefresh();
+            viewModel.setFavoriteTab(true);
             comicListBinding.favoritesTab.setBackgroundColor(
-                    ContextCompat.getColor(context, R.color.white)
+                    ContextCompat.getColor(context, R.color.silver)
             );
             comicListBinding.allComicsTab.setBackgroundColor(
-                    ContextCompat.getColor(context, R.color.silver)
+                    ContextCompat.getColor(context, R.color.white)
             );
         });
     }

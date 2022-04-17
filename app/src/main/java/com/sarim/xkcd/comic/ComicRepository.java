@@ -17,6 +17,11 @@ public class ComicRepository {
         allComics = comicDao.getAllComics();
     }
 
+    public ComicRepository(ComicDao comicDao) {
+        this.comicDao = comicDao;
+        allComics = comicDao.getAllComics();
+    }
+
     public void insert(Comic comic) {
         comicDao.insert(comic);
     }

@@ -1,4 +1,4 @@
-package com.sarim.xkcd.usecases;
+package com.sarim.xkcd.usecases.mainactivity;
 
 import android.content.Context;
 import android.content.Intent;
