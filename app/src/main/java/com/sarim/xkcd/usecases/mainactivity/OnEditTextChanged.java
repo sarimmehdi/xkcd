@@ -26,15 +26,29 @@ public class OnEditTextChanged {
             if ((keyEvent.getAction() == KeyEvent.ACTION_DOWN) && (i == KeyEvent.KEYCODE_ENTER)) {
                 try {
                     String inputByUser = comicListBinding.editTextPageNumber.getText().toString();
-                    int pageNum = Integer.parseInt(inputByUser);
-                    if (viewModel.isNotFavoriteTab()) {
-                        viewModel.deleteOnlyNonFavoriteComicsOnDevice();
-                        viewModel.getComicsFromServer(pageNum);
+                    if (viewModel.isFavoriteTab()) {
+                        int pageNumToCheckFavComicsFor = Integer.parseInt(inputByUser);
+                        if (viewModel.canChangeFavComicsPage(pageNumToCheckFavComicsFor)) {
+                            viewModel.setCurrPageFavComics(pageNumToCheckFavComicsFor);
+                            viewModel.deleteOnlyNonFavoriteComicsOnDevice();
+                            viewModel.forceRefresh();
+                        }
+                        else {
+                            comicListBinding.editTextPageNumber.setText(
+                                    String.valueOf(viewModel.getCurrPageFavComics())
+                            );
+                        }
                     }
                     else {
-                        viewModel.setCurrPageFavComics(pageNum);
-                        viewModel.deleteOnlyNonFavoriteComicsOnDevice();
-                        viewModel.forceRefresh();
+                        int pageNumToCheckAllComicsFor = Integer.parseInt(inputByUser);
+                        viewModel.canChangeAllComicsPage(pageNumToCheckAllComicsFor, () -> {
+                            viewModel.setCurrPageAllComics(pageNumToCheckAllComicsFor);
+                            viewModel.deleteOnlyNonFavoriteComicsOnDevice();
+                            viewModel.getComicsFromServer(pageNumToCheckAllComicsFor);
+                        });
+                        comicListBinding.editTextPageNumber.setText(
+                                String.valueOf(viewModel.getCurrPageAllComics())
+                        );
                     }
                 } catch (NumberFormatException e) {
                     e.printStackTrace();

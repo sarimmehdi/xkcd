@@ -3,6 +3,7 @@ package com.sarim.xkcd.di;
 import android.content.Context;
 
 import androidx.core.app.NotificationManagerCompat;
+import androidx.lifecycle.LifecycleOwner;
 
 import com.sarim.xkcd.ViewModel;
 import com.sarim.xkcd.comic.Comic;
@@ -20,13 +21,16 @@ public class MainActivityProvidersModule {
     private final ViewModel viewModel;
     private final ComicListBinding comicListBinding;
     private final NotificationManagerCompat notificationManager;
+    private final LifecycleOwner lifecycleOwner;
     private final Context context;
 
     public MainActivityProvidersModule(ViewModel viewModel, ComicListBinding comicListBinding,
-                                       NotificationManagerCompat notificationManager, Context context) {
+                                       NotificationManagerCompat notificationManager,
+                                       LifecycleOwner lifecycleOwner, Context context) {
         this.viewModel = viewModel;
         this.comicListBinding = comicListBinding;
         this.notificationManager = notificationManager;
+        this.lifecycleOwner = lifecycleOwner;
         this.context = context;
     }
 
@@ -46,6 +50,12 @@ public class MainActivityProvidersModule {
     @Provides
     NotificationManagerCompat provideNotificationManager() {
         return notificationManager;
+    }
+
+    @Singleton
+    @Provides
+    LifecycleOwner provideLifecycleOwner() {
+        return lifecycleOwner;
     }
 
     @Singleton

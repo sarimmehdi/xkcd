@@ -6,11 +6,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.app.TaskStackBuilder;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.LifecycleOwner;
 
 import com.sarim.xkcd.R;
 import com.sarim.xkcd.ViewModel;
@@ -27,25 +27,28 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 @Singleton
-public class OnAppStart extends AppCompatActivity {
+public class OnAppStart {
 
     private final ViewModel viewModel;
     private final ComicListBinding comicListBinding;
     private final NotificationManagerCompat notificationManager;
+    private final LifecycleOwner lifecycleOwner;
     private final Context context;
 
     @Inject
     public OnAppStart(ViewModel viewModel, ComicListBinding comicListBinding,
-                      NotificationManagerCompat notificationManager, Context context) {
+                      NotificationManagerCompat notificationManager, LifecycleOwner lifecycleOwner,
+                      Context context) {
         this.viewModel = viewModel;
         this.comicListBinding = comicListBinding;
         this.notificationManager = notificationManager;
+        this.lifecycleOwner = lifecycleOwner;
         this.context = context;
     }
 
     public void execute() {
         viewModel.setFavoriteTab(false);
-        viewModel.getComicsFromServer(0);
+        viewModel.getComicsFromServer(viewModel.getCurrPageAllComics());
         comicListBinding.favoritesTab.setBackgroundColor(
                 ContextCompat.getColor(context, R.color.white)
         );
@@ -53,13 +56,19 @@ public class OnAppStart extends AppCompatActivity {
                 ContextCompat.getColor(context, R.color.silver)
         );
         viewModel.getAllComicsOnDevice().observe(
-                this,
+                lifecycleOwner,
                 comics -> {
                     comics.forEach(comic ->
                             comic.setTranscript(comic.getTranscript().replaceAll(
                                     "[\\[\\](){}]",""
                             )));
-                    List<Comic> comicsOnCurrPage = viewModel.getComicsForCurrPageOnly(comics);
+                    List<Comic> comicsOnCurrPage;
+                    if (viewModel.isFavoriteTab()) {
+                        comicsOnCurrPage = viewModel.getFavComicsForCurrPageOnly(comics);
+                    }
+                    else {
+                        comicsOnCurrPage = viewModel.getAllComicsForCurrPageOnly(comics);
+                    }
                     comicListBinding.setComicAdapter(
                             new ComicAdapter(comicsOnCurrPage, comic -> {
                                 comic.setFavorite(!comic.isFavorite());
@@ -71,16 +80,16 @@ public class OnAppStart extends AppCompatActivity {
                 }
         );
         viewModel.getRecentlyAddedComic(comic -> {
-            SharedPreferences storedPreferences = getSharedPreferences(
-                    "latestComicPref", MODE_PRIVATE
+            SharedPreferences storedPreferences = context.getSharedPreferences(
+                    "latestComicPref", Context.MODE_PRIVATE
             );
             String latestComicNum = storedPreferences.getString("num", "1");
             try {
                 int storedNumForLatestComic = Integer.parseInt(latestComicNum);
                 int latestComicNumOnServer = comic.getNum();
                 if (latestComicNumOnServer > storedNumForLatestComic) {
-                    SharedPreferences retrievedPreferences = getSharedPreferences(
-                            "latestComicPref", MODE_PRIVATE
+                    SharedPreferences retrievedPreferences = context.getSharedPreferences(
+                            "latestComicPref", Context.MODE_PRIVATE
                     );
                     SharedPreferences.Editor editor = retrievedPreferences.edit();
                     editor.putString("num", String.valueOf(latestComicNumOnServer));
@@ -97,12 +106,13 @@ public class OnAppStart extends AppCompatActivity {
                 e.printStackTrace();
             }
         });
+        comicListBinding.executePendingBindings();
     }
 
     private void showNotification(String notification, Comic comic) {
         Intent resultIntent = new Intent(context, ComicViewingActivity.class);
         resultIntent.putExtra("comic", comic);
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
         stackBuilder.addNextIntentWithParentStack(resultIntent);
         PendingIntent pendingIntent = stackBuilder.getPendingIntent(0,
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE

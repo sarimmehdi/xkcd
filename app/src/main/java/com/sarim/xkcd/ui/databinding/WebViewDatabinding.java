@@ -9,7 +9,6 @@ public class WebViewDatabinding {
 
     @BindingAdapter({"loadUrl"})
     public static void loadUrl(WebView view, String url) {
-        Log.d("sarim", "the url " + url);
         view.loadUrl(url);
     }
 }

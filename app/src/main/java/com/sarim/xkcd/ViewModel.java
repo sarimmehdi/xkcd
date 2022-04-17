@@ -15,7 +15,6 @@ import com.sarim.xkcd.comic.ComicRepository;
 import com.sarim.xkcd.retrofit.RetrofitHelper;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -64,8 +63,7 @@ public class ViewModel extends AndroidViewModel {
         allComics = comicRepository.getAllComics();
     }
 
-    public ViewModel(ComicRepository comicRepository,
-                     @NonNull Application application) {
+    public ViewModel(ComicRepository comicRepository, @NonNull Application application) {
         super(application);
         this.comicRepository = comicRepository;
         allComics = comicRepository.getAllComics();
@@ -104,8 +102,8 @@ public class ViewModel extends AndroidViewModel {
         this.favoriteTab.set(favoriteTab);
     }
 
-    public boolean isNotFavoriteTab() {
-        return !favoriteTab.get();
+    public boolean isFavoriteTab() {
+        return favoriteTab.get();
     }
 
     /**
@@ -126,81 +124,51 @@ public class ViewModel extends AndroidViewModel {
     public void getComicsFromServer(int pageNumber) {
         int firstComicOnCurrPage = pageNumber * MAX_COMICS_PER_PAGE + 1;
         int lastComicOnCurrPage = firstComicOnCurrPage + MAX_COMICS_PER_PAGE - 1;
-        AtomicBoolean foundAtleastOneComicInNewRange = new AtomicBoolean(false);
         for (int id = firstComicOnCurrPage; id <= lastComicOnCurrPage; id++) {
             retrofitHelper.getComic(id, comic -> {
                 if (comic != null) {
                     insertComicOnDevice(comic);
-                    if (!foundAtleastOneComicInNewRange.get()) {
-                        setCurrPageAllComics(pageNumber);
-                        foundAtleastOneComicInNewRange.set(true);
-                    }
                 }
             });
         }
     }
 
-    /**
-     * For comics received from the server, always show them in ascending order of their number
-     * value regardless of whether they are favorites or not. When the favorites tab is selected,
-     * only show the favorite comics in ascending order of their number value
-     * @param comics list of comics that will be sorted before being displayed
-     * @return list of sorted comics according to the tab selected by the user
-     */
-    public List<Comic> getComicsForCurrPageOnly(List<Comic> comics) {
-        // if you only have favorites on device, that probably means you are offline
-        boolean onlyFavComicsOnDevice = comics.stream().allMatch(Comic::isFavorite);
+    public int getMaxComicsPerPage() {
+        return MAX_COMICS_PER_PAGE;
+    }
 
-        if (favoriteTab.get() || onlyFavComicsOnDevice) {
-            comics.sort((comic1, comic2) -> {
-                if (comic1.getNum() < comic2.getNum()) {
-                    return -1;
-                }
-                else if (comic1.getNum() > comic2.getNum()) {
-                    return 1;
-                }
-                return 0;
-            });
+    public void canChangeAllComicsPage(int pageNumToGoTo, Runnable onBeingAllowedToChangePage) {
+        int firstComicOnSupposedNextPage = pageNumToGoTo * MAX_COMICS_PER_PAGE + 1;
+        retrofitHelper.getComic(firstComicOnSupposedNextPage, comic -> {
+            if (comic != null) {
+                onBeingAllowedToChangePage.run();
+            }
+        });
+    }
 
-            // think of a sliding window being passed over list of ints
-            int maxLargeIndexOfFinalWindow = comics.size() - 1;
-            int minLargeIndexOfFinalWindow = Math.max(0, maxLargeIndexOfFinalWindow - MAX_COMICS_PER_PAGE);
-            int allowableMinIndexOfCurrentWindow, allowableMaxIndexOfCurrentWindow;
-            int proposedMinIndexOfCurrentWindow = currPageFavComics.get() * MAX_COMICS_PER_PAGE;
-            int proposedMaxIndexOfCurrentWindow = proposedMinIndexOfCurrentWindow + MAX_COMICS_PER_PAGE;
-
-            if (proposedMinIndexOfCurrentWindow < 0) {
-                allowableMinIndexOfCurrentWindow = 0;
-            }
-            else if (proposedMinIndexOfCurrentWindow >= comics.size()) {
-                allowableMinIndexOfCurrentWindow = minLargeIndexOfFinalWindow;
-            }
-            else {
-                allowableMinIndexOfCurrentWindow = proposedMinIndexOfCurrentWindow;
-            }
-
-            if (proposedMaxIndexOfCurrentWindow < 0) {
-                allowableMaxIndexOfCurrentWindow = 0;
-            }
-            else if (proposedMaxIndexOfCurrentWindow >= comics.size()) {
-                allowableMaxIndexOfCurrentWindow = maxLargeIndexOfFinalWindow;
-            }
-            else {
-                allowableMaxIndexOfCurrentWindow = proposedMaxIndexOfCurrentWindow;
-            }
-            return comics.subList(
-                    allowableMinIndexOfCurrentWindow,
-                    allowableMaxIndexOfCurrentWindow + 1
-            );
+    public boolean canChangeFavComicsPage(int pageNumToGoTo) {
+        int firstComicOnSupposedNextPage = pageNumToGoTo * MAX_COMICS_PER_PAGE;
+        List<Comic> comics = allComics.getValue();
+        if (comics != null) {
+            return firstComicOnSupposedNextPage >= 0 && firstComicOnSupposedNextPage < comics.size();
         }
-        else {
-            int firstComicOnCurrPage = currPageAllComics.get() * MAX_COMICS_PER_PAGE + 1;
-            int lastComicOnCurrPage = firstComicOnCurrPage + MAX_COMICS_PER_PAGE - 1;
-            return comics.stream()
-                    .filter(comic -> comic.getNum() >= firstComicOnCurrPage
-                            && comic.getNum() <= lastComicOnCurrPage)
-                    .collect(Collectors.toList());
-        }
+        return false;
+    }
+
+    public List<Comic> getFavComicsForCurrPageOnly(List<Comic> comics) {
+        int firstComicOnCurrPage = currPageFavComics.get() * MAX_COMICS_PER_PAGE + 1;
+        int lastComicOnCurrPage = firstComicOnCurrPage + MAX_COMICS_PER_PAGE - 1;
+        return comics.subList(
+                Math.min(firstComicOnCurrPage - 1, comics.size() - 1),
+                Math.min(lastComicOnCurrPage, comics.size())
+        );
+    }
+
+    public List<Comic> getAllComicsForCurrPageOnly(List<Comic> comics) {
+        int firstComicOnCurrPage = currPageAllComics.get() * MAX_COMICS_PER_PAGE + 1;
+        int lastComicOnCurrPage = firstComicOnCurrPage + MAX_COMICS_PER_PAGE - 1;
+        return comics.stream().filter(comic -> comic.getNum() >= firstComicOnCurrPage
+                && comic.getNum() <= lastComicOnCurrPage).collect(Collectors.toList());
     }
 
     private void insertComicOnDevice(Comic comic) {

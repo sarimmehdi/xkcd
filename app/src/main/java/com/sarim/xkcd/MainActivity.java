@@ -63,7 +63,8 @@ public class MainActivity extends AppCompatActivity {
         comicListBinding.setViewModel(viewModel);
         MainActivityComponents mainActivityComponents = DaggerMainActivityComponents.builder()
                 .mainActivityProvidersModule(new MainActivityProvidersModule(
-                        viewModel, comicListBinding, notificationManager, this)).build();
+                        viewModel, comicListBinding, notificationManager,
+                        this,this)).build();
         mainActivityComponents.inject(this);
 
         // this use case is executed when the app is started

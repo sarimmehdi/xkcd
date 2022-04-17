@@ -2,7 +2,6 @@ package com.sarim.xkcd.usecases.comicviewingactivity;
 
 
 import com.sarim.xkcd.ViewModel;
-import com.sarim.xkcd.comic.Comic;
 import com.sarim.xkcd.databinding.ComicBinding;
 import com.squareup.picasso.Picasso;
 
@@ -13,20 +12,17 @@ import javax.inject.Singleton;
 public class OnFavStarBtnClickedWhileViewingComic {
 
     private final ComicBinding comicBinding;
-    private final Comic comic;
     private final ViewModel viewModel;
 
     @Inject
-    public OnFavStarBtnClickedWhileViewingComic(ComicBinding comicBinding, Comic comic,
-                                                ViewModel viewModel) {
+    public OnFavStarBtnClickedWhileViewingComic(ComicBinding comicBinding, ViewModel viewModel) {
         this.comicBinding = comicBinding;
-        this.comic = comic;
         this.viewModel = viewModel;
     }
 
     @Inject
     public void execute() {
-        comicBinding.comicFullFavBtn.setOnClickListener(view -> {
+        comicBinding.setFavComicClickListener(comic -> {
             comic.setFavorite(!comic.isFavorite());
             comicBinding.setComic(comic);
             comicBinding.executePendingBindings();

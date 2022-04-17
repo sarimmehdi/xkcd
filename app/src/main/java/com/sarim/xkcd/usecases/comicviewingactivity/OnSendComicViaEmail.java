@@ -5,8 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.view.KeyEvent;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.sarim.xkcd.R;
 import com.sarim.xkcd.comic.Comic;
 import com.sarim.xkcd.databinding.ComicBinding;
@@ -15,7 +13,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 @Singleton
-public class OnSendComicViaEmail extends AppCompatActivity {
+public class OnSendComicViaEmail {
 
     private final ComicBinding comicBinding;
     private final Comic comic;
@@ -47,7 +45,7 @@ public class OnSendComicViaEmail extends AppCompatActivity {
                             + comic.getImg();
                     intent.putExtra(Intent.EXTRA_TEXT, emailBody);
                     try {
-                        startActivity(Intent.createChooser(
+                        context.startActivity(Intent.createChooser(
                                 intent, context.getString(R.string.email_send_title, inputByUser)
                         ));
                     } catch (ActivityNotFoundException e) {

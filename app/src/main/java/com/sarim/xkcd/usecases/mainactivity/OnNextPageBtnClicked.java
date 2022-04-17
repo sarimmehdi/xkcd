@@ -21,14 +21,21 @@ public class OnNextPageBtnClicked {
     @Inject
     public void execute() {
         comicListBinding.setNextPageClickListener(() -> {
-            if (viewModel.isNotFavoriteTab()) {
-                viewModel.deleteOnlyNonFavoriteComicsOnDevice();
-                viewModel.getComicsFromServer(viewModel.getCurrPageAllComics() + 1);
+            if (viewModel.isFavoriteTab()) {
+                int pageNumToCheckFavComicsFor = viewModel.getCurrPageFavComics() + 1;
+                if (viewModel.canChangeFavComicsPage(pageNumToCheckFavComicsFor)) {
+                    viewModel.setCurrPageFavComics(pageNumToCheckFavComicsFor);
+                    viewModel.deleteOnlyNonFavoriteComicsOnDevice();
+                    viewModel.forceRefresh();
+                }
             }
             else {
-                viewModel.setCurrPageFavComics(viewModel.getCurrPageFavComics() + 1);
-                viewModel.deleteOnlyNonFavoriteComicsOnDevice();
-                viewModel.forceRefresh();
+                int pageNumToCheckAllComicsFor = viewModel.getCurrPageAllComics() + 1;
+                viewModel.canChangeAllComicsPage(pageNumToCheckAllComicsFor, () -> {
+                    viewModel.setCurrPageAllComics(pageNumToCheckAllComicsFor);
+                    viewModel.deleteOnlyNonFavoriteComicsOnDevice();
+                    viewModel.getComicsFromServer(pageNumToCheckAllComicsFor);
+                });
             }
         });
     }
