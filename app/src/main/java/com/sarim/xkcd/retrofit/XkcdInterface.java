@@ -9,6 +9,9 @@ import retrofit2.http.Query;
 
 public interface XkcdInterface {
 
+    @GET("info.0.json")
+    Call<Comic> getRecentlyAddedComic();
+
     @GET("{id}/info.0.json")
     Call<Comic> getComic(@Path("id") int id);
 }

@@ -31,4 +31,12 @@ public class SearchWebViewActivity extends AppCompatActivity {
         searchWebviewBinding.setSearchText(searchText);
         searchWebviewBinding.executePendingBindings();
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        searchWebviewBinding.searchWebView.removeAllViews();
+        searchWebviewBinding.searchWebView.destroy();
+    }
 }

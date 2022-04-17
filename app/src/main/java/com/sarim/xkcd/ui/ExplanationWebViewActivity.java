@@ -30,4 +30,12 @@ public class ExplanationWebViewActivity extends AppCompatActivity {
         explanationWebviewBinding.setComic(comic);
         explanationWebviewBinding.executePendingBindings();
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        explanationWebviewBinding.explanationWebView.removeAllViews();
+        explanationWebviewBinding.explanationWebView.destroy();
+    }
 }

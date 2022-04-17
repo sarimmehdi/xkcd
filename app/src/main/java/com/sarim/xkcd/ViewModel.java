@@ -3,7 +3,6 @@ package com.sarim.xkcd;
 import android.app.Application;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.ObservableBoolean;
@@ -18,7 +17,6 @@ import com.sarim.xkcd.retrofit.RetrofitHelper;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class ViewModel extends AndroidViewModel {
@@ -79,8 +77,8 @@ public class ViewModel extends AndroidViewModel {
         viewModelHandler = new Handler(viewModelThread.getLooper());
     }
 
-    public int getCurrFavComicsOnDevice() {
-        return currFavComicsOnDevice;
+    public void getRecentlyAddedComic(Consumer<Comic> comicConsumer) {
+        retrofitHelper.getRecentlyAddedComic(comicConsumer::accept);
     }
 
     public void setCurrFavComicsOnDevice(int currFavComicsOnDevice) {
@@ -216,14 +214,6 @@ public class ViewModel extends AndroidViewModel {
 
     public void updateComicOnDevice(Comic comic) {
         viewModelHandler.post(() -> comicRepository.update(comic));
-    }
-
-    public void deleteComicOnDevice(Comic comic) {
-        viewModelHandler.post(() -> comicRepository.delete(comic));
-    }
-
-    public void deleteAllComicsOnDevice() {
-        viewModelHandler.post(comicRepository::deleteAll);
     }
 
     public void deleteOnlyNonFavoriteComicsOnDevice() {

@@ -41,4 +41,13 @@
     <!-- email sent to another person -->
     <string name="email_subject">Check out this cool comic!</string>
     <string name="email_send_title">Send this email to %1$s</string>
+
+    <!-- for setting up notifications channel -->
+    <string name="notification_new_comic_id">comic</string>
+    <string name="notification_new_comic_name">
+        checking whether a new comic was published or not</string>
+    <string name="notification_new_comic_desc">
+        this notification tells us whether there a new comic was published</string>
+    <string name="notification_new_comic_msg">
+        a new comic number %1$s was published!</string>
 </resources>
