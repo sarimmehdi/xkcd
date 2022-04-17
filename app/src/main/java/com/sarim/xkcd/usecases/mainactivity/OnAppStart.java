@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.view.View;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -48,6 +49,7 @@ public class OnAppStart {
 
     public void execute() {
         viewModel.setFavoriteTab(false);
+        comicListBinding.comicRetrievalProgressBar.setVisibility(View.VISIBLE);
         viewModel.getComicsFromServer(viewModel.getCurrPageAllComics());
         comicListBinding.favoritesTab.setBackgroundColor(
                 ContextCompat.getColor(context, R.color.white)
@@ -58,6 +60,7 @@ public class OnAppStart {
         viewModel.getAllComicsOnDevice().observe(
                 lifecycleOwner,
                 comics -> {
+                    comicListBinding.comicRetrievalProgressBar.setVisibility(View.INVISIBLE);
                     comics.forEach(comic ->
                             comic.setTranscript(comic.getTranscript().replaceAll(
                                     "[\\[\\](){}]",""
@@ -80,6 +83,9 @@ public class OnAppStart {
                 }
         );
         viewModel.getRecentlyAddedComic(comic -> {
+            if (comic == null) {
+                return;
+            }
             SharedPreferences storedPreferences = context.getSharedPreferences(
                     "latestComicPref", Context.MODE_PRIVATE
             );

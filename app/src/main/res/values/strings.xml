@@ -50,4 +50,9 @@
         this notification tells us whether there a new comic was published</string>
     <string name="notification_new_comic_msg">
         a new comic number %1$s was published!</string>
+
+    <!-- toast messages -->
+    <string name="toast_unable_to_send_email">Unable to send email to address %1$s, reason:\n%2$s</string>
+    <string name="toast_invalid_email">%1$s is not a valid email address</string>
+    <string name="toast_invalid_page_number">%1$s is not a valid page number</string>
 </resources>

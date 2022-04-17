@@ -1,6 +1,7 @@
 package com.sarim.xkcd.usecases.mainactivity;
 
 import android.content.Context;
+import android.view.View;
 
 import androidx.core.content.ContextCompat;
 
@@ -31,6 +32,7 @@ public class OnAllComicsBtnClicked {
         comicListBinding.setAllComicsClickListener(() -> {
             viewModel.deleteOnlyNonFavoriteComicsOnDevice();
             viewModel.setFavoriteTab(false);
+            comicListBinding.comicRetrievalProgressBar.setVisibility(View.VISIBLE);
             viewModel.getComicsFromServer(viewModel.getCurrPageAllComics());
             comicListBinding.favoritesTab.setBackgroundColor(
                     ContextCompat.getColor(context, R.color.white)

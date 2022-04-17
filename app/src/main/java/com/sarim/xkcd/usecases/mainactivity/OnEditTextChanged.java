@@ -1,7 +1,11 @@
 package com.sarim.xkcd.usecases.mainactivity;
 
+import android.content.Context;
 import android.view.KeyEvent;
+import android.view.View;
+import android.widget.Toast;
 
+import com.sarim.xkcd.R;
 import com.sarim.xkcd.ViewModel;
 import com.sarim.xkcd.databinding.ComicListBinding;
 
@@ -13,19 +17,21 @@ public class OnEditTextChanged {
 
     private final ViewModel viewModel;
     private final ComicListBinding comicListBinding;
+    private final Context context;
 
     @Inject
-    public OnEditTextChanged(ViewModel viewModel, ComicListBinding comicListBinding) {
+    public OnEditTextChanged(ViewModel viewModel, ComicListBinding comicListBinding, Context context) {
         this.viewModel = viewModel;
         this.comicListBinding = comicListBinding;
+        this.context = context;
     }
 
     @Inject
     public void execute() {
         comicListBinding.editTextPageNumber.setOnKeyListener((view, i, keyEvent) -> {
             if ((keyEvent.getAction() == KeyEvent.ACTION_DOWN) && (i == KeyEvent.KEYCODE_ENTER)) {
+                String inputByUser = comicListBinding.editTextPageNumber.getText().toString();
                 try {
-                    String inputByUser = comicListBinding.editTextPageNumber.getText().toString();
                     if (viewModel.isFavoriteTab()) {
                         int pageNumToCheckFavComicsFor = Integer.parseInt(inputByUser);
                         if (viewModel.canChangeFavComicsPage(pageNumToCheckFavComicsFor)) {
@@ -44,6 +50,7 @@ public class OnEditTextChanged {
                         viewModel.canChangeAllComicsPage(pageNumToCheckAllComicsFor, () -> {
                             viewModel.setCurrPageAllComics(pageNumToCheckAllComicsFor);
                             viewModel.deleteOnlyNonFavoriteComicsOnDevice();
+                            comicListBinding.comicRetrievalProgressBar.setVisibility(View.VISIBLE);
                             viewModel.getComicsFromServer(pageNumToCheckAllComicsFor);
                         });
                         comicListBinding.editTextPageNumber.setText(
@@ -51,6 +58,8 @@ public class OnEditTextChanged {
                         );
                     }
                 } catch (NumberFormatException e) {
+                    Toast.makeText(context, context.getString(R.string.toast_invalid_page_number,
+                            inputByUser), Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
                 }
                 return true;

@@ -1,5 +1,7 @@
 package com.sarim.xkcd.usecases.mainactivity;
 
+import android.view.View;
+
 import com.sarim.xkcd.ViewModel;
 import com.sarim.xkcd.databinding.ComicListBinding;
 
@@ -34,6 +36,7 @@ public class OnNextPageBtnClicked {
                 viewModel.canChangeAllComicsPage(pageNumToCheckAllComicsFor, () -> {
                     viewModel.setCurrPageAllComics(pageNumToCheckAllComicsFor);
                     viewModel.deleteOnlyNonFavoriteComicsOnDevice();
+                    comicListBinding.comicRetrievalProgressBar.setVisibility(View.VISIBLE);
                     viewModel.getComicsFromServer(pageNumToCheckAllComicsFor);
                 });
             }

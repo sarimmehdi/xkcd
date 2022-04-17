@@ -4,6 +4,7 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.view.KeyEvent;
+import android.widget.Toast;
 
 import com.sarim.xkcd.R;
 import com.sarim.xkcd.comic.Comic;
@@ -49,8 +50,15 @@ public class OnSendComicViaEmail {
                                 intent, context.getString(R.string.email_send_title, inputByUser)
                         ));
                     } catch (ActivityNotFoundException e) {
+                        Toast.makeText(context, context.getString(R.string.toast_unable_to_send_email,
+                                        inputByUser, e.getLocalizedMessage()), Toast.LENGTH_SHORT)
+                                .show();
                         e.printStackTrace();
                     }
+                }
+                else {
+                    Toast.makeText(context, context.getString(R.string.toast_invalid_email,
+                            inputByUser), Toast.LENGTH_SHORT).show();
                 }
                 return true;
             }
