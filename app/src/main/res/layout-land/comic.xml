@@ -12,6 +12,9 @@
         <variable
             name="onExplanationClicked"
             type="com.sarim.xkcd.ui.interfaces.ExplanationClickListener" />
+        <variable
+            name="favComicClickListener"
+            type="com.sarim.xkcd.ui.interfaces.OnFavComicClickListener" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -48,6 +51,22 @@
             app:layout_constraintStart_toStartOf="@+id/comic_explanation"
             app:layout_constraintTop_toBottomOf="@+id/receipentEmailAddress"
             app:layout_constraintVertical_bias="0.0" />
+
+        <ImageButton
+            android:id="@+id/comic_full_fav_btn"
+            android:layout_width="57dp"
+            android:layout_height="48dp"
+            android:background="#FFFFFF"
+            android:contentDescription="@string/comic_favorite_btn_description"
+            android:onClick="@{() -> favComicClickListener.favStarButtonClicked(comic)}"
+            app:favorite="@{comic.favorite}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/receipentEmailTextView"
+            app:layout_constraintHorizontal_bias="0.136"
+            app:layout_constraintStart_toStartOf="@+id/comic_explanation"
+            app:layout_constraintTop_toBottomOf="@+id/explanationBtn"
+            app:layout_constraintVertical_bias="0.52"
+            app:srcCompat="@android:drawable/star_big_off" />
 
         <ImageView
             android:id="@+id/comic_img"

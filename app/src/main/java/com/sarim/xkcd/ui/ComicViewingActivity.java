@@ -4,22 +4,29 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.sarim.xkcd.R;
+import com.sarim.xkcd.ViewModel;
 import com.sarim.xkcd.comic.Comic;
 import com.sarim.xkcd.databinding.ComicBinding;
 import com.sarim.xkcd.ui.interfaces.ExplanationClickListener;
+import com.sarim.xkcd.ui.interfaces.OnFavComicClickListener;
+import com.squareup.picasso.Picasso;
 
-public class ComicViewingActivity extends AppCompatActivity implements ExplanationClickListener {
+public class ComicViewingActivity extends AppCompatActivity
+        implements ExplanationClickListener, OnFavComicClickListener {
 
     private ComicBinding comicBinding;
-
     private Context context;
+    private ViewModel viewModel;
+    private Comic comic;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -33,12 +40,22 @@ public class ComicViewingActivity extends AppCompatActivity implements Explanati
         super.onStart();
 
         context = this;
+        viewModel = new ViewModelProvider(this).get(ViewModel.class);
+        viewModel.getAllComicsOnDevice().observe(
+                this,
+                comics -> {
+                    for (Comic comic : comics) {
+                        Log.d("sarim", "the comic is now " + comic.isFavorite());
+                    }
+                }
+        );
+        viewModel.createBackgroundThreads();
         Bundle data = getIntent().getExtras();
-        Comic comic = data.getParcelable("comic");
+        comic = data.getParcelable("comic");
         comicBinding.setComic(comic);
         comicBinding.setOnExplanationClicked(this);
         comicBinding.executePendingBindings();
-
+        comicBinding.setFavComicClickListener(this);
         comicBinding.receipentEmailAddress.setOnKeyListener((view, i, keyEvent) -> {
             if ((keyEvent.getAction() == KeyEvent.ACTION_DOWN) && (i == KeyEvent.KEYCODE_ENTER)) {
                 String inputByUser = comicBinding.receipentEmailAddress.getText().toString();
@@ -74,5 +91,30 @@ public class ComicViewingActivity extends AppCompatActivity implements Explanati
         Intent intent = new Intent(context, ExplanationWebViewActivity.class);
         intent.putExtra("comic", comic);
         context.startActivity(intent);
+    }
+
+    @Override
+    public void favStarButtonClicked(Comic comic) {
+        comic.setFavorite(!comic.isFavorite());
+        comicBinding.setComic(comic);
+        comicBinding.executePendingBindings();
+        Picasso.get().load(comic.getImg());
+
+        // comic that was set to bein
+        if (comic.isFavorite()) {
+            viewModel.insertComic(comic);
+        }
+        else {
+            viewModel.deleteComic(comic);
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        // this use case is executed when you close the app
+        viewModel.deleteOnlyNonFavoriteComicsOnDevice();
+        viewModel.quitThreads();
     }
 }

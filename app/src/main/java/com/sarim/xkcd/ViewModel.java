@@ -58,10 +58,6 @@ public class ViewModel extends AndroidViewModel {
     // show only a certain number of comics per page
     private static final int MAX_COMICS_PER_PAGE = 5;
 
-    // restrict the number of comics the user can mark as favorite
-    private static final int MAX_FAV_COMICS = 20;
-    private int currFavComicsOnDevice = 0;
-
     public ViewModel(@NonNull Application application) {
         super(application);
         comicRepository = new ComicRepository(application);
@@ -79,14 +75,6 @@ public class ViewModel extends AndroidViewModel {
 
     public void getRecentlyAddedComic(Consumer<Comic> comicConsumer) {
         retrofitHelper.getRecentlyAddedComic(comicConsumer::accept);
-    }
-
-    public void setCurrFavComicsOnDevice(int currFavComicsOnDevice) {
-        this.currFavComicsOnDevice = currFavComicsOnDevice;
-    }
-
-    public boolean canMarkComicAsFavorite() {
-        return currFavComicsOnDevice <= MAX_FAV_COMICS;
     }
 
     public int getCurrPageAllComics() {
@@ -228,6 +216,14 @@ public class ViewModel extends AndroidViewModel {
                 updateComicOnDevice(comic);
             }
         }
+    }
+
+    public void deleteComic(Comic comic) {
+        viewModelHandler.post(() -> comicRepository.delete(comic));
+    }
+
+    public void insertComic(Comic comic) {
+        viewModelHandler.post(() -> comicRepository.insert(comic));
     }
 
     public LiveData<List<Comic>> getAllComicsOnDevice() {

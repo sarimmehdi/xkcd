@@ -69,24 +69,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         comicListBinding = DataBindingUtil.setContentView(this, R.layout.comic_list);
-
-        viewModel = new ViewModelProvider(this).get(ViewModel.class);
-        viewModel.getAllComicsOnDevice().observe(
-                this,
-                comics -> {
-                    comics.forEach(comic ->
-                            comic.setTranscript(comic.getTranscript().replaceAll(
-                                    "[\\[\\](){}]",""
-                            )));
-                    long totalFavComicsOnDevice = comics.stream().filter(Comic::isFavorite).count();
-                    viewModel.setCurrFavComicsOnDevice((int) totalFavComicsOnDevice);
-                    List<Comic> comicsOnCurrPage = viewModel.getComicsForCurrPageOnly(comics);
-                    comicListBinding.setComicAdapter(
-                            new ComicAdapter(comicsOnCurrPage, onFavStarBtnClicked.execute())
-                    );
-                    comicListBinding.executePendingBindings();
-                }
-        );
     }
 
     @Override
@@ -96,6 +78,21 @@ public class MainActivity extends AppCompatActivity {
         notificationManager = NotificationManagerCompat.from(context);
 
         // initialize view model and databinding for comic list before adding them to dependency graph
+        viewModel = new ViewModelProvider(this).get(ViewModel.class);
+        viewModel.getAllComicsOnDevice().observe(
+                this,
+                comics -> {
+                    comics.forEach(comic ->
+                            comic.setTranscript(comic.getTranscript().replaceAll(
+                                    "[\\[\\](){}]",""
+                            )));
+                    List<Comic> comicsOnCurrPage = viewModel.getComicsForCurrPageOnly(comics);
+                    comicListBinding.setComicAdapter(
+                            new ComicAdapter(comicsOnCurrPage, onFavStarBtnClicked.execute())
+                    );
+                    comicListBinding.executePendingBindings();
+                }
+        );
         viewModel.createBackgroundThreads();
         viewModel.getRecentlyAddedComic(comic -> {
             SharedPreferences storedPreferences = getSharedPreferences(

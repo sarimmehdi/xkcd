@@ -23,11 +23,9 @@ public class OnFavStarBtnClicked {
 
     public Consumer<Comic> execute() {
         return comic -> {
-            if (viewModel.canMarkComicAsFavorite()) {
-                Picasso.get().load(comic.getImg());
-                comic.setFavorite(!comic.isFavorite());
-                viewModel.updateComicOnDevice(comic);
-            }
+            comic.setFavorite(!comic.isFavorite());
+            Picasso.get().load(comic.getImg());
+            viewModel.updateComicOnDevice(comic);
         };
     }
 }

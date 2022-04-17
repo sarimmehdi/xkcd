@@ -1,7 +1,6 @@
 package com.sarim.xkcd.comic;
 
 import android.app.Application;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
@@ -28,10 +27,6 @@ public class ComicRepository {
 
     public void delete(Comic comic) {
         comicDao.delete(comic);
-    }
-
-    public void deleteAll() {
-        comicDao.deleteAll();
     }
 
     public void deleteNonFavorites() {
