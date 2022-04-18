@@ -35,7 +35,7 @@ The comics are associated to a LiveData object that follows the Observer design 
 
 SharedPreferences is used for keeping track of the latest comic on the remote database. This is queried against the remote database every time the user opens the app to check whether a new comic was published or not.
 
-Databinding is used to reduce boiler plate code associated with updating views whenever data changes. Finally, unit and integration tests were written to ensure the code is stable.
+Databinding is used to reduce boiler plate code associated with updating views whenever data changes. Additionally, Picasso is used to grab images from URL and add them to an ImageView and also to cache them (only for comics marked as favorite) so that they can be available in the future. Finally, unit and integration tests were written to ensure the code is stable.
 
 ## Functionality
 
