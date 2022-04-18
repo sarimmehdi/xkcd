@@ -310,8 +310,4 @@ public class ViewModelTest {
         viewModel.getComicFromServer(9, comic -> viewModel.insertComic(comic));
         viewModel.getComicFromServer(10, comic -> viewModel.insertComic(comic));
     }
-
-    @Test
-    public void getAllComicsOnDevice() {
-    }
 }
