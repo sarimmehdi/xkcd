@@ -3,6 +3,7 @@ package com.sarim.xkcd;
 import android.app.Application;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.ObservableBoolean;

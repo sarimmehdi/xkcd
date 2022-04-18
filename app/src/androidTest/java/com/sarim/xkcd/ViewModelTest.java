@@ -7,22 +7,24 @@ import android.content.Context;
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.Observer;
 import androidx.room.Room;
 import androidx.test.core.app.ApplicationProvider;
 
-import com.google.gson.Gson;
 import com.sarim.xkcd.comic.Comic;
 import com.sarim.xkcd.comic.ComicDatabase;
 import com.sarim.xkcd.comic.ComicRepository;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 public class ViewModelTest {
 
@@ -82,16 +84,16 @@ public class ViewModelTest {
 
     @Test
     public void testSetFavoriteTab() {
-        assertTrue(viewModel.isNotFavoriteTab());
+        assertFalse(viewModel.isFavoriteTab());
         viewModel.setFavoriteTab(true);
-        assertFalse(viewModel.isNotFavoriteTab());
+        assertTrue(viewModel.isFavoriteTab());
     }
 
     @Test
-    public void testIsNotFavoriteTab() {
-        assertTrue(viewModel.isNotFavoriteTab());
+    public void testIsFavoriteTab() {
+        assertFalse(viewModel.isFavoriteTab());
         viewModel.setFavoriteTab(true);
-        assertFalse(viewModel.isNotFavoriteTab());
+        assertTrue(viewModel.isFavoriteTab());
     }
 
     @Test
@@ -99,6 +101,21 @@ public class ViewModelTest {
         viewModel.getComicFromServer(1, comic -> assertEquals(comic.getNum(), 1));
         viewModel.getComicFromServer(2, comic -> assertEquals(comic.getNum(), 2));
         viewModel.getComicFromServer(3, comic -> assertEquals(comic.getNum(), 3));
+    }
+
+    @Test
+    public void testCanChangeAllComicsPage() {
+        viewModel.getComicsFromServer(1);
+        viewModel.getComicsFromServer(2);
+        viewModel.getComicsFromServer(3);
+        AtomicInteger successCounter = new AtomicInteger();
+        viewModel.canChangeAllComicsPage(1, successCounter::getAndIncrement);
+        viewModel.canChangeAllComicsPage(2, successCounter::getAndIncrement);
+        viewModel.canChangeAllComicsPage(3, () -> {
+            successCounter.getAndIncrement();
+            assertEquals(successCounter.get(), 3);
+        });
+        viewModel.canChangeAllComicsPage(4, Assert::fail);
     }
 
     @Test
@@ -114,58 +131,184 @@ public class ViewModelTest {
         viewModel.getComicsFromServer(23);
     }
 
-    // test for non-favorite comics only
     @Test
-    public void testGetComicsForCurrPageOnly1() {
-        viewModel.setFavoriteTab(false);
+    public void testCanChangeFavComicsPage() {
         viewModel.getAllComicsOnDevice().observe(lifecycleOwner, comics -> {
-            assertEquals(comics.size(), viewModel.getMaxComicsPerPage());
-            Collections.shuffle(comics);
-            List<Comic> currPageComics = viewModel.getComicsForCurrPageOnly(comics);
-            int numOfCurrComic = currPageComics.get(0).getNum();
-            for (Comic currPageComic : currPageComics.subList(1, currPageComics.size())) {
-                assertTrue(currPageComic.getNum() > numOfCurrComic);
-                numOfCurrComic++;
+            if (comics.size() == 8) {
+                assertTrue(viewModel.canChangeFavComicsPage(1));
+                assertTrue(viewModel.canChangeFavComicsPage(2));
+                assertFalse(viewModel.canChangeFavComicsPage(3));
             }
         });
-        viewModel.getComicsFromServer(23);
+        List<Integer> favComicIds = Arrays.asList(1, 2, 3, 7, 15, 6, 9, 10);
+        for (int id = 1; id <= 20; id++) {
+            viewModel.getComicFromServer(id, comic -> {
+                if (favComicIds.contains(comic.getNum())) {
+                    comic.setFavorite(true);
+                    viewModel.insertComic(comic);
+                }
+            });
+        }
     }
 
-    // test for favorite comics only
     @Test
-    public void testGetComicsForCurrPageOnly2() {
-        viewModel.setFavoriteTab(true);
+    public void testGetFavComicsForCurrPageOnly() {
         viewModel.getAllComicsOnDevice().observe(lifecycleOwner, comics -> {
-            assertEquals(comics.size(), viewModel.getMaxComicsPerPage());
-            Collections.shuffle(comics);
-            List<Comic> currPageComics = viewModel.getComicsForCurrPageOnly(comics);
-            int numOfCurrComic = currPageComics.get(0).getNum();
-            for (Comic currPageComic : currPageComics.subList(1, currPageComics.size())) {
-                assertTrue(currPageComic.getNum() > numOfCurrComic);
-                numOfCurrComic++;
+            if (comics.size() == 8) {
+                viewModel.setCurrPageFavComics(1);
+                List<Comic> comicsForPage1 = viewModel.getFavComicsForCurrPageOnly(comics);
+                List<Integer> favComicIdsPage1 = Arrays.asList(1, 2, 3, 7, 15);
+                comicsForPage1.forEach(comic -> assertTrue(favComicIdsPage1.contains(comic.getNum())));
+                viewModel.setCurrPageFavComics(2);
+                List<Comic> comicsForPage2 = viewModel.getFavComicsForCurrPageOnly(comics);
+                List<Integer> favComicIdsPage2 = Arrays.asList(6, 9, 10);
+                comicsForPage2.forEach(comic -> assertTrue(favComicIdsPage2.contains(comic.getNum())));
             }
         });
-        viewModel.getComicsFromServer(23);
+        List<Integer> favComicIds = Arrays.asList(1, 2, 3, 7, 15, 6, 9, 10);
+        for (int id = 1; id <= 20; id++) {
+            viewModel.getComicFromServer(id, comic -> {
+                if (favComicIds.contains(comic.getNum())) {
+                    comic.setFavorite(true);
+                    viewModel.insertComic(comic);
+                }
+            });
+        }
     }
 
     @Test
-    public void updateComicOnDevice() {
+    public void testGetAllComicsForCurrPageOnly() {
+        viewModel.getAllComicsOnDevice().observe(lifecycleOwner, comics -> {
+            if (comics.size() == 10) {
+                viewModel.setCurrPageAllComics(1);
+                List<Comic> comicsForPage1 = viewModel.getAllComicsForCurrPageOnly(comics);
+                List<Integer> allComicIdsPage1 = Arrays.asList(1, 2, 3, 4, 5);
+                comicsForPage1.forEach(comic -> assertTrue(allComicIdsPage1.contains(comic.getNum())));
+                viewModel.setCurrPageAllComics(2);
+                List<Comic> comicsForPage2 = viewModel.getAllComicsForCurrPageOnly(comics);
+                List<Integer> allComicIdsPage2 = Arrays.asList(6, 7, 8, 9, 10);
+                comicsForPage2.forEach(comic -> assertTrue(allComicIdsPage2.contains(comic.getNum())));
+            }
+        });
+        viewModel.getComicsFromServer(1);
+        viewModel.getComicsFromServer(2);
     }
 
     @Test
-    public void deleteOnlyNonFavoriteComicsOnDevice() {
+    public void testInsertComicOnDevice() {
+        viewModel.getAllComicsOnDevice().observe(lifecycleOwner, comics -> {
+            if (comics.size() == 5) {
+                List<Integer> comicIdsToCheckAgainst = Arrays.asList(1, 2, 3, 4, 5);
+                comics.forEach(comic -> assertTrue(comicIdsToCheckAgainst.contains(comic.getNum())));
+            }
+        });
+        viewModel.getComicFromServer(1, comic -> viewModel.insertComic(comic));
+        viewModel.getComicFromServer(2, comic -> viewModel.insertComic(comic));
+        viewModel.getComicFromServer(3, comic -> viewModel.insertComic(comic));
+        viewModel.getComicFromServer(4, comic -> viewModel.insertComic(comic));
+        viewModel.getComicFromServer(5, comic -> viewModel.insertComic(comic));
     }
 
     @Test
-    public void forceRefresh() {
+    public void testUpdateComicOnDevice() {
+        viewModel.getAllComicsOnDevice().observe(lifecycleOwner, comics -> {
+            List<Integer> comicIdsToCheckAgainst = Arrays.asList(1, 2, 3, 4, 5);
+            comics.forEach(comic -> {
+                if (!comic.isFavorite()) {
+                    comic.setFavorite(true);
+                    viewModel.updateComicOnDevice(comic);
+                }
+                else {
+                    assertTrue(comicIdsToCheckAgainst.contains(comic.getNum()));
+                }
+            });
+        });
+        viewModel.getComicFromServer(1, comic -> viewModel.insertComic(comic));
+        viewModel.getComicFromServer(2, comic -> viewModel.insertComic(comic));
+        viewModel.getComicFromServer(3, comic -> viewModel.insertComic(comic));
+        viewModel.getComicFromServer(4, comic -> viewModel.insertComic(comic));
+        viewModel.getComicFromServer(5, comic -> viewModel.insertComic(comic));
     }
 
     @Test
-    public void deleteComic() {
+    public void testDeleteOnlyNonFavoriteComicsOnDevice() {
+        viewModel.getAllComicsOnDevice().observe(lifecycleOwner, comics -> {
+            List<Integer> favComicIds = Arrays.asList(1, 2, 5);
+            List<Integer> nonFavComicIds = Arrays.asList(3, 4);
+            comics.forEach(comic -> {
+                if (comic.isFavorite()) {
+                    assertTrue(favComicIds.contains(comic.getNum()));
+                }
+                else {
+                    assertTrue(nonFavComicIds.contains(comic.getNum()));
+                }
+            });
+        });
+        viewModel.getComicFromServer(1, comic -> {
+            comic.setFavorite(true);
+            viewModel.insertComic(comic);
+        });
+        viewModel.getComicFromServer(2, comic -> {
+            comic.setFavorite(true);
+            viewModel.insertComic(comic);
+        });
+        viewModel.getComicFromServer(3, comic -> viewModel.insertComic(comic));
+        viewModel.getComicFromServer(4, comic -> viewModel.insertComic(comic));
+        viewModel.getComicFromServer(5, comic -> {
+            comic.setFavorite(true);
+            viewModel.insertComic(comic);
+        });
+    }
+
+    @Test
+    public void testForceRefresh() {
+        AtomicBoolean forceRefreshCalled = new AtomicBoolean(false);
+        viewModel.getAllComicsOnDevice().observe(lifecycleOwner, comics -> {
+            if (forceRefreshCalled.get()) {
+                assertTrue(true);
+            }
+            else {
+                forceRefreshCalled.set(true);
+                viewModel.forceRefresh();
+            }
+        });
+        viewModel.getComicFromServer(1, comic -> viewModel.insertComic(comic));
+    }
+
+    @Test
+    public void testDeleteComic() {
+        AtomicBoolean checkForDeletedComic = new AtomicBoolean(false);
+        viewModel.getAllComicsOnDevice().observe(lifecycleOwner, comics -> {
+            if (checkForDeletedComic.get()) {
+                assertEquals(comics.size(), 1);
+                Comic comic = comics.get(0);
+                assertEquals(comic.getNum(), 1);
+            }
+            else {
+                checkForDeletedComic.set(true);
+                comics.stream()
+                        .filter(comic -> comic.getNum() == 2)
+                        .findAny()
+                        .ifPresent(comic -> viewModel.deleteComic(comic));
+            }
+
+        });
+        viewModel.getComicFromServer(1, comic -> viewModel.insertComic(comic));
+        viewModel.getComicFromServer(2, comic -> viewModel.insertComic(comic));
     }
 
     @Test
     public void insertComic() {
+        viewModel.getAllComicsOnDevice().observe(lifecycleOwner, comics -> {
+            assertEquals(comics.size(), 5);
+            List<Integer> comicIdsToCheckAgainst = Arrays.asList(1, 2, 7, 9, 10);
+            comics.forEach(comic -> assertTrue(comicIdsToCheckAgainst.contains(comic.getNum())));
+        });
+        viewModel.getComicFromServer(1, comic -> viewModel.insertComic(comic));
+        viewModel.getComicFromServer(2, comic -> viewModel.insertComic(comic));
+        viewModel.getComicFromServer(7, comic -> viewModel.insertComic(comic));
+        viewModel.getComicFromServer(9, comic -> viewModel.insertComic(comic));
+        viewModel.getComicFromServer(10, comic -> viewModel.insertComic(comic));
     }
 
     @Test
