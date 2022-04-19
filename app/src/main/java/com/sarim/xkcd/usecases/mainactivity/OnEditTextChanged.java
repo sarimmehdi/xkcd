@@ -72,4 +72,38 @@ public class OnEditTextChanged {
             return false;
         });
     }
+
+    public void testExecute(String inputByUser) {
+        try {
+            if (viewModel.isFavoriteTab()) {
+                int pageNumToCheckFavComicsFor = Integer.parseInt(inputByUser);
+                if (viewModel.canChangeFavComicsPage(pageNumToCheckFavComicsFor)) {
+                    viewModel.setCurrPageFavComics(pageNumToCheckFavComicsFor);
+                    viewModel.deleteOnlyNonFavoriteComicsOnDevice();
+                    viewModel.forceRefresh();
+                }
+                else {
+                    comicListBinding.editTextPageNumber.setText(
+                            String.valueOf(viewModel.getCurrPageFavComics())
+                    );
+                }
+            }
+            else {
+                int pageNumToCheckAllComicsFor = Integer.parseInt(inputByUser);
+                viewModel.canChangeAllComicsPage(pageNumToCheckAllComicsFor, () -> {
+                    viewModel.setCurrPageAllComics(pageNumToCheckAllComicsFor);
+                    viewModel.deleteOnlyNonFavoriteComicsOnDevice();
+                    comicListBinding.comicRetrievalProgressBar.setVisibility(View.VISIBLE);
+                    viewModel.getComicsFromServer(pageNumToCheckAllComicsFor);
+                });
+                comicListBinding.editTextPageNumber.setText(
+                        String.valueOf(viewModel.getCurrPageAllComics())
+                );
+            }
+        } catch (NumberFormatException e) {
+            Toast.makeText(context, context.getString(R.string.toast_invalid_page_number,
+                    inputByUser), Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
+    }
 }

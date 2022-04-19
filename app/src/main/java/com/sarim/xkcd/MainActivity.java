@@ -28,7 +28,7 @@ import javax.inject.Inject;
 
 public class MainActivity extends AppCompatActivity {
 
-    private ComicListBinding comicListBinding;
+    ComicListBinding comicListBinding;
 
     // all the different functions our app performs
     @Inject
