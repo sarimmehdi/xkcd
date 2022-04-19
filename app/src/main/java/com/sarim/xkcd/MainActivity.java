@@ -2,6 +2,9 @@ package com.sarim.xkcd;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -69,6 +72,24 @@ public class MainActivity extends AppCompatActivity {
 
         // this use case is executed when the app is started
         onAppStart.execute();
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            WindowInsetsControllerCompat windowInsetsController =
+                    ViewCompat.getWindowInsetsController(this.getWindow().getDecorView());
+            if (windowInsetsController == null) {
+                return;
+            }
+            // Configure the behavior of the hidden system bars
+            windowInsetsController.setSystemBarsBehavior(
+                    WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+            );
+            // Hide both the status bar and the navigation bar
+            windowInsetsController.hide(WindowInsetsCompat.Type.systemBars());
+        }
     }
 
     @Override

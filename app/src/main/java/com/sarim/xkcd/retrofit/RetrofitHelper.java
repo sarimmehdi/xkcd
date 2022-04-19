@@ -5,6 +5,8 @@ import androidx.core.util.Consumer;
 import com.sarim.xkcd.comic.Comic;
 
 import org.jetbrains.annotations.NotNull;
+
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
@@ -41,6 +43,7 @@ public class RetrofitHelper {
      */
     public void getComic(int id, Consumer<Comic> comicConsumer) {
         Call<Comic> call = xkcdInterface.getComic(id);
+        Log.d(TAG, "the url is " + call.request().url());
         call.enqueue(new Callback<Comic>() {
             @Override
             public void onResponse(@NotNull Call<Comic> call,
