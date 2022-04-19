@@ -21,6 +21,9 @@ public class OnExplanationBtnClicked {
         this.context = context;
     }
 
+    /**
+     * Open a new activity where a webpage, with the comic's explanation, will be displayed
+     */
     @Inject
     public void execute() {
         comicBinding.setOnExplanationClicked(comic -> {

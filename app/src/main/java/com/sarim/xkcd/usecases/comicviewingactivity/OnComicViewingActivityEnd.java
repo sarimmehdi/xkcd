@@ -15,6 +15,10 @@ public class OnComicViewingActivityEnd {
         this.viewModel = viewModel;
     }
 
+    /**
+     * when you exit the comic viewing activity, you must destroy the threads for the view model
+     * and delete any non-favorite comics cached into your Room database
+     */
     public void execute() {
         viewModel.deleteOnlyNonFavoriteComicsOnDevice();
         viewModel.quitThreads();

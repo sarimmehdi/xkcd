@@ -40,7 +40,7 @@ Databinding is used to reduce boiler plate code associated with updating views w
 ## Functionality
 
 - The app downloads the first 5 comics in the beginning and caches them inside the database using Room.
-- When the app is installed for the first time and then opened, the **https://xkcd.com/info.0.json** is pinged to get the latest comic and this is shown as a notification to the user. The user can click this notification to be taken straight to the comic.
+- When the app is installed for the first time and then opened, the **https://xkcd.com/info.0.json** is pinged to get the latest comic and this is shown as a notification to the user. The user can click this notification to be taken straight to the latest comic.
 - Two separate tabs are used for displaying comics. The **All Comics** tab provides all the comics and the **Favorites** tab only shows the comics marked as favorite by the user. Comics marked as favorite are available online as well.
 - 5 comics at a time are displayed on a single page and the user has the option to move between pages or hop several pages forward or backwards. This is possible for both tabs.
 - User can mark comics as favorite while looking at them casually in the ScrollView or when they are looking at the full details of an individual comic. To mark a comic as favorite, simply tap the star and it will turn red to indicate that.

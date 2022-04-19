@@ -20,6 +20,12 @@ public class OnPrevBtnClicked {
         this.comicListBinding = comicListBinding;
     }
 
+    /**
+     * for All Comics tab: Pressing the previous page grabs the next few comics, according to their
+     * id, from the remote database
+     * for Favorite Comics tab: Pressing the previous page grabs the next few comics, according to
+     * their id, from the Room persistent database on the phone
+     */
     @Inject
     public void execute() {
         comicListBinding.setPrevPageClickListener(() -> {

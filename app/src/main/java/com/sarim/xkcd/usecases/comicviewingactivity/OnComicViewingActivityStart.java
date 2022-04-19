@@ -18,6 +18,10 @@ public class OnComicViewingActivityStart {
         this.comic = comic;
     }
 
+    /**
+     * set the Comic whose details you wish to see and refresh the view to allow the databinding
+     * to take place for the new Comic object
+     */
     public void execute() {
         comicBinding.setComic(comic);
         comicBinding.executePendingBindings();

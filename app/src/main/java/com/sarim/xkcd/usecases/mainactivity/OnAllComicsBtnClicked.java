@@ -27,6 +27,9 @@ public class OnAllComicsBtnClicked {
         this.context = context;
     }
 
+    /**
+     * grab all the comics for the current page and update the tabs respectively
+     */
     @Inject
     public void execute() {
         comicListBinding.setAllComicsClickListener(() -> {

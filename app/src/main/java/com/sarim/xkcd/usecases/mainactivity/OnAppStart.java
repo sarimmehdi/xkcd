@@ -47,6 +47,10 @@ public class OnAppStart {
         this.context = context;
     }
 
+    /**
+     * in the beginning, we are only concerned with all the comics and, so, we try to retrieve
+     * all the comics for the current page (which is 0 in the beginning) to show them
+     */
     public void execute() {
         viewModel.setFavoriteTab(false);
         comicListBinding.comicRetrievalProgressBar.setVisibility(View.VISIBLE);
@@ -61,10 +65,14 @@ public class OnAppStart {
                 lifecycleOwner,
                 comics -> {
                     comicListBinding.comicRetrievalProgressBar.setVisibility(View.INVISIBLE);
+
+                    // get rid of all the brackets for a better reading experience
                     comics.forEach(comic ->
                             comic.setTranscript(comic.getTranscript().replaceAll(
                                     "[\\[\\](){}]",""
                             )));
+
+                    // logic for getting comics for current page is different for the two tabs
                     List<Comic> comicsOnCurrPage;
                     if (viewModel.isFavoriteTab()) {
                         comicsOnCurrPage = viewModel.getFavComicsForCurrPageOnly(comics);
@@ -82,6 +90,15 @@ public class OnAppStart {
                     comicListBinding.executePendingBindings();
                 }
         );
+
+        /*
+         * When the app is installed for the first time, you will always get a notification
+         * with the number of the latest published comic. This number is stored inside the
+         * SharedPreferences. The next time you open the app again, this check is performed again
+         * and if a new comic is published you will get a notification because the number of a new
+         * comic on the remote database will always be greater than the number of the latest published
+         * comic on your device
+         */
         viewModel.getRecentlyAddedComic(comic -> {
             if (comic == null) {
                 return;
@@ -115,6 +132,11 @@ public class OnAppStart {
         comicListBinding.executePendingBindings();
     }
 
+    /**
+     * show a notification at the top of your device
+     * @param notification the notification message
+     * @param comic the comic for which you are shown the notification
+     */
     private void showNotification(String notification, Comic comic) {
         Intent resultIntent = new Intent(context, ComicViewingActivity.class);
         resultIntent.putExtra("comic", comic);

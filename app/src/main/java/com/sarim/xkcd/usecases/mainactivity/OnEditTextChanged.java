@@ -26,6 +26,11 @@ public class OnEditTextChanged {
         this.context = context;
     }
 
+    /**
+     * The text written by the user is parsed. If it is just a number, we retrieve the exact comic.
+     * Otherwise, a webpage is opened up where the textprovided by the user is used to search for
+     * a relevant comic
+     */
     @Inject
     public void execute() {
         comicListBinding.editTextPageNumber.setOnKeyListener((view, i, keyEvent) -> {

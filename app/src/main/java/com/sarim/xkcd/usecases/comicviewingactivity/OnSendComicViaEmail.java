@@ -27,6 +27,9 @@ public class OnSendComicViaEmail {
         this.context = context;
     }
 
+    /**
+     * create an email template that can then be sent to the user whose email address you typed in
+     */
     @Inject
     public void execute() {
         comicBinding.receipentEmailAddress.setOnKeyListener((view, i, keyEvent) -> {

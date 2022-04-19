@@ -26,6 +26,12 @@ public class ComicAdapter extends RecyclerView.Adapter<ComicAdapter.ViewHolder>
     private Context context;
     private final Consumer<Comic> comicConsumerWhenFavBtnClicked;
 
+    /**
+     *
+     * @param comics list of comics to be displayed in the RecyclerView
+     * @param comicConsumerWhenFavBtnClicked perform an action for a comic whose favorite button is
+     *                                       clicked
+     */
     public ComicAdapter(List<Comic> comics, Consumer<Comic> comicConsumerWhenFavBtnClicked) {
         this.comics = comics;
         this.comicConsumerWhenFavBtnClicked = comicConsumerWhenFavBtnClicked;
@@ -57,6 +63,10 @@ public class ComicAdapter extends RecyclerView.Adapter<ComicAdapter.ViewHolder>
         return comics.size();
     }
 
+    /**
+     * view the full comic when it is clicked in the RecyclerView
+     * @param comic the Comic object for whihc we wish to look at the details
+     */
     @Override
     public void comicClicked(Comic comic) {
         Intent intent = new Intent(context, ComicViewingActivity.class);
@@ -64,6 +74,10 @@ public class ComicAdapter extends RecyclerView.Adapter<ComicAdapter.ViewHolder>
         context.startActivity(intent);
     }
 
+    /**
+     * do something with the comic if its favorite button is clicked
+     * @param comic the Comic object for which the favorite button is clicked
+     */
     @Override
     public void favStarButtonClicked(Comic comic) {
         comicConsumerWhenFavBtnClicked.accept(comic);
@@ -77,6 +91,10 @@ public class ComicAdapter extends RecyclerView.Adapter<ComicAdapter.ViewHolder>
             this.comicSummaryBinding = comicSummaryBinding;
         }
 
+        /**
+         * set the Comic object and refresh the RecyclerView
+         * @param obj we want this to work for any generic object and not just a Comic object
+         */
         public void bind(Object obj) {
             comicSummaryBinding.setVariable(BR.comic, obj);
             comicSummaryBinding.executePendingBindings();

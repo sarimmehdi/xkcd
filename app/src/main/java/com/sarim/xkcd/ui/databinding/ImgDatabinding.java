@@ -10,6 +10,12 @@ import com.squareup.picasso.Picasso;
 
 public class ImgDatabinding {
 
+    /**
+     * Load image from comic url if it exists. Only cache the image on the device if the Comic
+     * was marked as favorite.
+     * @param view view into which the image, loaded from url, will be updated
+     * @param comic the Comic object, whose image we wish to retrieve
+     */
     @BindingAdapter({"imageUrl"})
     public static void setImageUrl(ImageView view, Comic comic) {
         if (comic.getImg().isEmpty()) {

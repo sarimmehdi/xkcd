@@ -25,6 +25,10 @@ public class OnFavBtnClicked {
         this.context = context;
     }
 
+    /**
+     * switch to the favorite comics tab and force a refresh so that the RecyclerView
+     * displays the favorite comics for that page only
+     */
     @Inject
     public void execute() {
         comicListBinding.setFavoritesClickListener(() -> {

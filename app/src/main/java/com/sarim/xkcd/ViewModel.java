@@ -138,6 +138,13 @@ public class ViewModel extends AndroidViewModel {
         return MAX_COMICS_PER_PAGE;
     }
 
+    /**
+     * First check whether there are comics on the remote database for the new page number before
+     * trying to change the page number to the new one
+     * @param pageNumToGoTo page number you want to check for
+     * @param onBeingAllowedToChangePage if there is at least one comic for the new page, then
+     *                                   execute this code
+     */
     public void canChangeAllComicsPage(int pageNumToGoTo, Runnable onBeingAllowedToChangePage) {
         int firstComicOnSupposedNextPage = pageNumToGoTo * MAX_COMICS_PER_PAGE + 1;
         retrofitHelper.getComic(firstComicOnSupposedNextPage, comic -> {
@@ -147,6 +154,12 @@ public class ViewModel extends AndroidViewModel {
         });
     }
 
+    /**
+     * First check whether there are comics inside the Room persistent database on the phone
+     * for the new page number before trying to change the page number to the new one
+     * @param pageNumToGoTo page number you want to check for
+     * @return true if the page can be changed, false otherwise
+     */
     public boolean canChangeFavComicsPage(int pageNumToGoTo) {
         int firstComicOnSupposedNextPage = pageNumToGoTo * MAX_COMICS_PER_PAGE;
         List<Comic> comics = allComics.getValue();
@@ -184,6 +197,11 @@ public class ViewModel extends AndroidViewModel {
         viewModelHandler.post(comicRepository::deleteNonFavorites);
     }
 
+    /**
+     * Just update the favorites attribute for the comics stored on the device by assigning the same
+     * value as before. This is just to trigger the Observer which then causes the RecyclerView to
+     * be updated
+     */
     public void forceRefresh() {
         List<Comic> comics = allComics.getValue();
         if (comics != null) {

@@ -25,6 +25,9 @@ public class RetrofitHelper {
     // for communicating with xkcd api
     private final XkcdInterface xkcdInterface;
 
+    /**
+     * create retrofit client and initialize the XkcdInterface
+     */
     public RetrofitHelper() {
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         builder.readTimeout(30, TimeUnit.SECONDS);
@@ -38,8 +41,10 @@ public class RetrofitHelper {
     }
 
     /**
-     *
+     * If you get a comic, the consumer receives the comic, otherwise it gets a null object
      * @param id id of xkcd comic you wish to retrieve
+     * @param comicConsumer this consumes the Comic object and performs actions on it or related
+     *                      to it
      */
     public void getComic(int id, Consumer<Comic> comicConsumer) {
         Call<Comic> call = xkcdInterface.getComic(id);
@@ -68,6 +73,11 @@ public class RetrofitHelper {
         });
     }
 
+    /**
+     * Always get the latest published comic (mainly used to check if a new comic is published)
+     * @param comicConsumer this consumes the Comic object and performs actions on it or related
+     *                      to it
+     */
     public void getRecentlyAddedComic(Consumer<Comic> comicConsumer) {
         Call<Comic> call = xkcdInterface.getRecentlyAddedComic();
         call.enqueue(new Callback<Comic>() {
